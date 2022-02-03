@@ -1,12 +1,4 @@
-from audioop import add
-from msilib.schema import Class
-from os import stat
-from pstats import Stats
-
-
 import json
-
-from matplotlib.pyplot import tick_params
 
 class Stats():
     """
@@ -37,10 +29,10 @@ class Stats():
         print(self.memory["top"])
 
     def subtract(self, name):
-        name = name.capitalize()
-        for person in self.memory["top"]:
-            if name == person[0]:
-                person[1] -= 1
+        if self.__is_person(name):
+            self.memory["top"][name] -= 1
+        else:
+            self.__create(name, -1)
 
         print(self.memory["top"])
 
@@ -67,6 +59,6 @@ class Stats():
 if __name__ == "__main__":
     test = Stats()
     test.setup()
-    test.add("New")
+    test.subtract("New")
 
         
