@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # This is just config stuff: Token, what server to write to, what channel to use for io
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = "Teststuff"
+GUILD = "Klinternet"
 CHANNEL = "rating"
 
 
@@ -27,14 +27,13 @@ client = discord.Client()
 # If this something is a message
 async def on_message(message):
     print(message.author.id)
+
+    """
     if message.author.id == "170604046388953089":
         print("YES")
-
-    for guild in client.guilds:
-       print(guild.name)
-       if guild.name == GUILD:
-           print("YES")
+    """
     
+
     # This is just so the bot does not answer itself and become a loop
     if message.author == client.user:
         return
@@ -49,6 +48,9 @@ async def on_message(message):
         response += "-----------------------"
         await message.channel.send(response)
     
+    elif message.content.split()[0] == "!alias":
+        print("alias")
+
     # This is when giving or taking rating-points from persons
     elif message.content != None and str(client.get_channel(message.channel.id)) == CHANNEL:
         new_message = message.content

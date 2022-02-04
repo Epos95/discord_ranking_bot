@@ -93,7 +93,15 @@ class Stats():
                 return i+1
         return 0
 
-        
+    def add_alias(self, person_id, new_alias):
+        utils.fix_str(new_alias)
+        for key, val in self.__memory["alias"].items():
+            print("hej")
+
+
+    def change_name(self, person_id, new_name):
+        utils.fix_str(new_name)
+
                     
 # If starting this file as main
 if __name__ == "__main__":
