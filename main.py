@@ -9,8 +9,9 @@ from dotenv import load_dotenv
 # This is just config stuff: Token, what server to write to, what channel to use for io
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-CHANNEL = "general"
+CHANNEL = "rating"
+
+commands = {} # This will store different commands and stuff
 
 # Creating a obj for the memory and stuff
 top_list = memory.Stats()
@@ -27,7 +28,7 @@ async def on_message(message):
         return
 
     # If !stats is written, it will print all the points for each person. The other stuff is for formating
-    if message.content == "!stats":
+    if message.content == "!ranking":
         response = "-----------------------\n"
         counter = 1
         for person in top_list.get_list():
