@@ -40,12 +40,13 @@ async def on_message(message):
 
     # If !stats is written, it will print all the points for each person. The other stuff is for formating
     if message.content == "!ranking":
-        response = "-----------------------\n"
-        counter = 1
-        for person in top_list.get_list():
-            response += f"| \# {str(counter)} {top_list.get_stat(person)}"
-            counter += 1
-        response += "-----------------------"
+        longest_name = max(map(len, top_list.get_list()))
+        response = ("-" * (longest_name + 5)) + "\n"
+
+        for counter, person in enumerate(top_list.get_list()):
+            response += f"| \# {str(counter+1)} {top_list.get_stat(person)}"
+
+        response += ("-" * (longest_name + 5))
         await message.channel.send(response)
     
     elif message.content.split()[0] == "!alias":
