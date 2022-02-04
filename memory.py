@@ -23,6 +23,7 @@ class Stats():
 
     # This is for adding points to a person
     def add(self, name):
+        print(f"name {name}")
         name = self.fix_str(name)
         print(f"name: {name}")
         if self.__is_person(name):
