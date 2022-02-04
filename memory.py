@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import utils
 
@@ -92,6 +93,16 @@ class Stats():
             if top_list[i] == name:
                 return i+1
         return 0
+    
+    def history(self, sender, reciever, reason, vote):
+        if vote == "+":
+            vote = "Up"
+        if vote == "-":
+            vote = "Down"
+        timeholder = datetime.datetime.now()
+        time = timeholder.
+        self.__memory["voting_history"].insert({"sender": sender, "reciever": reciever, "reason": reason, "vote": "vote", "timestamp": time})
+    
 
     def add_alias(self, person_id, new_alias):
         utils.fix_str(new_alias)

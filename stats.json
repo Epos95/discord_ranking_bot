@@ -1,1 +1,23 @@
-{"top": {"Leo": 1, "Max": -6, "Carl": -1, "Peggy": -1}, "reasons": {"Leo": ["hej", "test"]}, "alias": {"Leo": "745931303530135603"}}
+{
+    "top": {
+        "Leo": 1,
+        "Max": -6,
+        "Carl": -1,
+        "Peggy": -1
+    },
+    "voting_history": [
+        {
+            "sender": "Carl",
+            "reciever": "Max",
+            "reason": "Hater",
+            "vote": "Down",
+            "timestamp": "19998236"
+        }
+    ],
+    "names": {
+        "Leo": "745931303530135603",
+        "Max": "939173158953558066",
+        "Carl": "939172543909220372",
+        "Peggy": "300728843290017802"
+    }
+}
