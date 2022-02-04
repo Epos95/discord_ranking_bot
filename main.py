@@ -23,6 +23,7 @@ client = discord.Client()
 @client.event
 # If this something is a message
 async def on_message(message):
+    print(message.author)
     # This is just so the bot does not answer itself and become a loop
     if message.author == client.user:
         return
@@ -43,12 +44,21 @@ async def on_message(message):
         # When rating someone the call will be done from here
         if new_message[0] == "-" or new_message[0] == "+":
             # if there is a gap between -/+ and name
+            name = ""
             if new_message[1] == " ":
-                commands[new_message[0]](str(new_message.split()[1]))
+                name = str(new_message.split()[1])
+                pos = top_list.get_pos(name)
+                commands[new_message[0]](name)
+                pos2 = top_list.get_pos(name)
             else:
-                commands[new_message[0]](str(new_message.split()[0][1:]))
-            
-            response = "updated"
+                name = str(new_message.split()[0][1:]) 
+                pos = top_list.get_pos(name)
+                commands[new_message[0]](name)
+                pos2 = top_list.get_pos(name)
+            if pos != pos2: 
+                response = f"{name} was moved {pos-pos2} steps to place #{top_list.get_pos(name)}"
+            else:
+                response = f"{name} is still on place {top_list.get_pos(name)}"
         try:
             # This is the message that will be sent if the command was recognized
             await message.channel.send(response)

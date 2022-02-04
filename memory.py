@@ -1,4 +1,5 @@
 import json
+import utils
 
 class Stats():
     # Just initialation, loading json file and making it usable
@@ -23,8 +24,7 @@ class Stats():
 
     # This is for adding points to a person
     def add(self, name):
-        print(f"name {name}")
-        name = self.fix_str(name)
+        name = utils.fix_str(name)
         print(f"name: {name}")
         if self.__is_person(name):
             self.__memory["top"][name] += 1
@@ -37,8 +37,7 @@ class Stats():
 
     # This is for subtracting points from person
     def subtract(self, name):
-        print(f"name is {name}")
-        name = self.fix_str(name)
+        name = utils.fix_str(name)
         if self.__is_person(name):
             self.__memory["top"][name] -= 1
         else:
@@ -82,16 +81,18 @@ class Stats():
 
     # This is a "To string" function for each person individualy
     def get_stat(self, name):
-        name = self.fix_str(name)
+        name = utils.fix_str(name)
         x = name + " " + str(self.__memory["top"][name]) + "\n"
         return x
 
-    def fix_str(self, name):
-        alias = {"Ckarl": "Carl", "Maxen": "Max", "Poggy": "Peggy", "Karl": "Carl", "Calle": "Carl", "Kalle": "Carl", "Epos": "Max"}
-        name = name.replace(" ", "").capitalize()
-        if name in alias:
-            name = alias[name]
-        return name
+    def get_pos(self, name):
+        name = utils.fix_str(name)
+        top_list = self.get_list()
+        for i in range(len(top_list)-1):
+            if top_list[i] == name:
+                return i+1
+        return 0
+
         
                     
 # If starting this file as main
