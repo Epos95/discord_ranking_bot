@@ -1,5 +1,6 @@
-from datetime import datetime
+import datetime
 import json
+
 import utils
 
 class Stats():
@@ -8,10 +9,8 @@ class Stats():
         self.__savefile = "stats.json"
         
         fh = open(self.__savefile, "r")
-        x = fh.readline()
+        self.__memory = json.load(fh)
         fh.close()
-
-        self.__memory = json.loads(x)
 
     # This is just a quick write over everything solution
     def setup(self):
@@ -94,14 +93,16 @@ class Stats():
                 return i+1
         return 0
     
+    # Works, just needs to be implemented
     def history(self, sender, reciever, reason, vote):
         if vote == "+":
             vote = "Up"
         if vote == "-":
             vote = "Down"
         timeholder = datetime.datetime.now()
-        time = timeholder.
-        self.__memory["voting_history"].insert({"sender": sender, "reciever": reciever, "reason": reason, "vote": "vote", "timestamp": time})
+        time = timeholder.strftime("%d/%m-%Y %H:%M:%S")
+        self.__memory["voting_history"].insert(0, {"sender": sender, "reciever": reciever, "reason": reason, "vote": "vote", "timestamp": time})
+        self.__save()
     
 
     def add_alias(self, person_id, new_alias):
@@ -118,8 +119,9 @@ class Stats():
 if __name__ == "__main__":
     test = Stats()
     #test.setup()
-    test.subtract("leo")
-    print(test.get_list())
+    #test.subtract("leo")
+    #print(test.get_list())
     #print(test.get_stat("leo"))
+    #test.history("From", "To", "Reasoning", "+")
 
         
