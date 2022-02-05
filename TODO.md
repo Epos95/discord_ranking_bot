@@ -1,10 +1,10 @@
 # TODO
 
 ## First
-* Adding alias in json
+* Adding alias in json ot make them dynamical
 * Connect list with people in the server, so people in the server is automatically in the list
-* Not being able to rank myself
 * History over all the rankings
+* Alias_id should return discord nickname if there is no alias
 
 
 ## Second stage

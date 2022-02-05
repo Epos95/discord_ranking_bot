@@ -103,7 +103,14 @@ class Stats():
         time = timeholder.strftime("%d/%m-%Y %H:%M:%S")
         self.__memory["voting_history"].insert(0, {"sender": sender, "reciever": reciever, "reason": reason, "vote": "vote", "timestamp": time})
         self.__save()
-    
+
+    def alias_id(self, name):
+        name = name.capitalize()
+        try:
+            return self.__memory["alias"][name]
+        except:
+            # This should return discord nickname
+            return "Jane Doe"
 
     def add_alias(self, person_id, new_alias):
         utils.fix_str(new_alias)
@@ -119,9 +126,4 @@ class Stats():
 if __name__ == "__main__":
     test = Stats()
     #test.setup()
-    #test.subtract("leo")
-    #print(test.get_list())
-    #print(test.get_stat("leo"))
-    #test.history("From", "To", "Reasoning", "+")
-
-        
+    #print(test.alias_id("hej"))

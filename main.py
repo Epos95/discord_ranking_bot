@@ -25,7 +25,7 @@ client = discord.Client()
 @client.event
 # If this something is a message
 async def on_message(message):
-    #print(message.author.id)
+    print(message.author.id)
 
     """
     if message.author.id == "170604046388953089":
@@ -59,20 +59,31 @@ async def on_message(message):
             if new_message[0] == "-" or new_message[0] == "+":
                 # if there is a gap between -/+ and name
                 name = ""
+                self_rating = False
                 if new_message[1] == " ":
                     name = str(new_message.split()[1])
-                    pos = top_list.get_pos(name)
-                    commands[new_message[0]](name)
-                    pos2 = top_list.get_pos(name)
+                    if top_list.alias_id(name) == str(message.author.id):
+                        self_rating = True
+                    else:
+                        print(f"sender {message.author.id} rated {top_list.alias_id(name)}")
+                        pos = top_list.get_pos(name)
+                        commands[new_message[0]](name)
+                        pos2 = top_list.get_pos(name)
                 else:
                     name = str(new_message.split()[0][1:]) 
-                    pos = top_list.get_pos(name)
-                    commands[new_message[0]](name)
-                    pos2 = top_list.get_pos(name)
-                if pos != pos2: 
-                    response = f"{name} was moved {pos-pos2} steps to place #{top_list.get_pos(name)}"
+                    if top_list.alias_id(name) == str(message.author.id):
+                        self_rating = True
+                    else:
+                        pos = top_list.get_pos(name)
+                        commands[new_message[0]](name)
+                        pos2 = top_list.get_pos(name)
+                if self_rating:
+                    response = "You are not allowed to vote on yourself"
                 else:
-                    response = f"{name} is still on place {top_list.get_pos(name)}"
+                    if pos != pos2: 
+                        response = f"{name} was moved {pos-pos2} steps to place #{top_list.get_pos(name)}"
+                    else:
+                        response = f"{name} is still on place {top_list.get_pos(name)}"
             try:
                 # This is the message that will be sent if the command was recognized
                 await message.channel.send(response)
