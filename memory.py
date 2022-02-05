@@ -1,3 +1,4 @@
+from ctypes import util
 import datetime
 import json
 
@@ -95,13 +96,10 @@ class Stats():
     
     # Works, just needs to be implemented
     def history(self, sender, reciever, reason, vote):
-        if vote == "+":
-            vote = "Up"
-        if vote == "-":
-            vote = "Down"
+        vote = utils.vote_meaning(vote)
         timeholder = datetime.datetime.now()
         time = timeholder.strftime("%d/%m-%Y %H:%M:%S")
-        self.__memory["voting_history"].insert(0, {"sender": sender, "reciever": reciever, "reason": reason, "vote": "vote", "timestamp": time})
+        self.__memory["voting_history"].insert(0, {"sender": sender, "reciever": reciever, "reason": reason, "vote": vote, "timestamp": time})
         self.__save()
 
     def alias_id(self, name):
@@ -127,3 +125,4 @@ if __name__ == "__main__":
     test = Stats()
     #test.setup()
     #print(test.alias_id("hej"))
+    test.history("From", "To", "Reasoning", "-")
