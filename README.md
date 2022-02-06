@@ -3,6 +3,7 @@ Simple bot made for ranking players with commands ish
 
 ## Commands
 * !ranking
+
 stats will print the toplist in order and display the points for the person
 * \+ [name] ([reason])
 
