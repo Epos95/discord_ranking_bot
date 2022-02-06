@@ -2,6 +2,8 @@ import memory
 import os
 
 import discord
+# Had this for the intent
+#from discord.ext import commands
 from dotenv import load_dotenv
 
 # This is just config stuff: Token, what server to write to, what channel to use for io
@@ -14,6 +16,10 @@ CHANNEL = "rating"
 # Creating a obj for the memory and stuff
 top_list = memory.Stats()
 
+# This is for seeing all members on server, but it does not work
+#intents = discord.Intents()
+#intents.all()
+#bot = commands.Bot(command_prefix='.',intents=intents)
 
 # This is the handle to the discord api
 client = discord.Client()
@@ -54,8 +60,6 @@ async def on_message(message):
         return
 
     if str(message.guild) == GUILD: # Remove "or 1" if running for real
-        print("YES")
-
         # Once methods are rewritten a bit the commands structure can be even more generic in such a way that:
         #
         # if message.content.split()[0] in commands:
@@ -63,7 +67,7 @@ async def on_message(message):
         #
         # The args can be made generic by letting the functions in commands use **kwargs and *args or wahtever
 
-        # If !stats is written, it will print all the points for each person. The other stuff is for formating
+        # If !ranking is written, it will print all the points for each person. The other stuff is for formating
         if message.content.split()[0] == "!ranking":
             # Call the command (Which we know exists) with the correct args
             await commands[message.content.split()[0]](message)
