@@ -5,9 +5,11 @@ Simple bot made for ranking players with commands ish
 * !ranking
 stats will print the toplist in order and display the points for the person
 * \+ [name] ([reason])
-+ will give a score to a person
+
+will give a score to a person
 * \- [name] ([reason])
-- will remove a score from a person
+
+will remove a score from a person
 
 ## Things that needs to be added manually:
 * .env 
