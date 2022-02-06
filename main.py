@@ -14,12 +14,6 @@ CHANNEL = "rating"
 # Creating a obj for the memory and stuff
 top_list = memory.Stats()
 
-# This will store different commands and stuff
-commands = {
-    "-": top_list.subtract,
-    "+": top_list.add,
-    "!ranking" : ranking,
-} 
 
 # This is the handle to the discord api
 client = discord.Client()
@@ -36,7 +30,13 @@ async def ranking(m):
     response += ("-" * (longest_name + 12))
     await m.channel.send(response)
 
-async def 
+# This will store different commands and stuff
+commands = {
+    "-": top_list.subtract,
+    "+": top_list.add,
+    "!ranking": ranking
+} 
+
 
 # If something happens on discord
 @client.event
@@ -54,6 +54,7 @@ async def on_message(message):
         return
 
     if str(message.guild) == GUILD: # Remove "or 1" if running for real
+        print("YES")
 
         # Once methods are rewritten a bit the commands structure can be even more generic in such a way that:
         #
@@ -65,7 +66,7 @@ async def on_message(message):
         # If !stats is written, it will print all the points for each person. The other stuff is for formating
         if message.content.split()[0] == "!ranking":
             # Call the command (Which we know exists) with the correct args
-            commands[message.content.split()[0]](message)
+            await commands[message.content.split()[0]](message)
 
         elif message.content.split()[0] == "!alias":
             print("alias")
@@ -109,5 +110,7 @@ async def on_message(message):
             except:
                 # If not recognized message
                 pass
+    else:
+        print(message.guild)
 
 client.run(TOKEN)
