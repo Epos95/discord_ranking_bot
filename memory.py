@@ -1,7 +1,8 @@
-from ctypes import util
+# imports from lib
 import datetime
 import json
 
+# Other selfwritten files
 import utils
 
 class Stats():
@@ -83,11 +84,13 @@ class Stats():
     # This is a "To string" function for each person individualy
     def get_stat(self, name):
         name = utils.fix_str(name)
-        x = name + " " + str(self.__memory["top"][name]) + "\n"
+        if name in self.__memory["names"]:
+            name = self.__memory["names"][name]
+        x = name + " " + str(self.__memory["top"][self.alias_id(name)]) + "\n"
         return x
 
     def get_pos(self, name):
-        name = utils.fix_str(name)
+        name = self.alias_id(utils.fix_str(name))
         top_list = self.get_list()
         for i in range(len(top_list)-1):
             if top_list[i] == name:
@@ -111,13 +114,31 @@ class Stats():
             return "Jane Doe"
 
     def add_alias(self, person_id, new_alias):
-        utils.fix_str(new_alias)
+        new_alias = utils.fix_str(new_alias)
         for key, val in self.__memory["alias"].items():
-            print("hej")
-
+            if key == new_alias:
+                if val != person_id:
+                    return 0
+                return 1
+        self.__memory["alias"][new_alias] = person_id
+        self.__save()
+        print("new alias")
+        return 1
 
     def change_name(self, person_id, new_name):
+        if not self.add_alias(person_id, new_name):
+            return 0
+
+        for key, val in self.__memory["names"].items():
+            if val == new_name:
+                if key != person_id:
+                    return 0
+                return 1
+
         utils.fix_str(new_name)
+        self.__memory["names"][person_id] = new_name
+        self.__save()
+        return 1
 
                     
 # If starting this file as main
@@ -125,4 +146,4 @@ if __name__ == "__main__":
     test = Stats()
     #test.setup()
     #print(test.alias_id("hej"))
-    test.history("From", "To", "Reasoning", "-")
+    #test.history("From", "To", "Reasoning", "-")

@@ -11,6 +11,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('GUILD')
 CHANNEL = "rating"
+CHANNEL_RATING = "rating"
 
 
 # Creating a obj for the memory and stuff
@@ -40,7 +41,9 @@ async def ranking(m):
 commands = {
     "-": top_list.subtract,
     "+": top_list.add,
-    "!ranking": ranking
+    "!ranking": ranking,
+    "!name": top_list.change_name,
+    "history": top_list.history
 } 
 
 
@@ -74,46 +77,52 @@ async def on_message(message):
 
         elif message.content.split()[0] == "!alias":
             print("alias")
+        
+        elif message.content.split()[0] == "!name":
+            if commands[message.content.split()[0]](str(message.author.id), message.content.split()[1]):
+                response = f"Your new name is {message.content.split()[1]}"
+            else:
+                response = f"{message.content.split()[1]} is not avalible"
+            
+            await message.channel.send(response)
 
-        # This is when giving or taking rating-points from persons
-        elif message.content != None and str(client.get_channel(message.channel.id)) == CHANNEL:
-            new_message = message.content
-            # When rating someone the call will be done from here
-            if new_message[0] == "-" or new_message[0] == "+":
-                name = "" # This is the string that will hold the name of the person being voted on
-                self_rating = False # Flag for if person votes on themselves
-                # if there is a gap between -/+ and name
-                if new_message[1] == " ":
-                    name = str(new_message.split()[1])
-                    # Stopping people from voting for themselves
-                    if top_list.alias_id(name) == str(message.author.id):
-                        self_rating = True
-                    else:
-                        pos = top_list.get_pos(name)
-                        commands[new_message[0]](name)
-                        pos2 = top_list.get_pos(name)
+        # New giving or taking rating-points
+        elif str(client.get_channel(message.channel.id)) == CHANNEL_RATING:
+            content = message.content
+            name = ""
+            reason = ""
+            is_reason = False
+            character_not_name = [' ', '+', '-']
+            # This for-loop will take out name and reason in variables form content (message.content)
+            for i in content:
+                if i == '(' or is_reason:
+                    if i != '(' and i != ')':
+                        reason += i
+                    is_reason = True
+                elif i not in character_not_name:
+                    name += i
+            
+            # Making sure it is not allowed to vote for oneself
+            if top_list.alias_id(name) == str(message.author.id):
+                response = "You are not allowed to vote on yourself"
+            
+            # This part could be switched out with iterating over all server members + alias
+            elif top_list.alias_id(name) == "Jane Doe":
+                response = f"{name} is not registered as a person"
+
+            else:
+                pos1 = top_list.get_pos(name)
+                commands[message.content[0]](top_list.alias_id(name))
+                commands["history"](sender=str(message.author.id), reciever=top_list.alias_id(name), reason=reason, vote=message.content[0])
+                pos2 = top_list.get_pos(name)
+
+                if pos1 != pos2: 
+                    response = f"{name} was moved {pos1-pos2} steps to place #{top_list.get_pos(name)}"
                 else:
-                    name = str(new_message.split()[0][1:]) 
-                    # Stopping people from voting for themselves
-                    if top_list.alias_id(name) == str(message.author.id):
-                        self_rating = True
-                    else:
-                        pos = top_list.get_pos(name)
-                        commands[new_message[0]](name)
-                        pos2 = top_list.get_pos(name)
-                if self_rating:
-                    response = "You are not allowed to vote on yourself"
-                else:
-                    if pos != pos2: 
-                        response = f"{name} was moved {pos-pos2} steps to place #{top_list.get_pos(name)}"
-                    else:
-                        response = f"{name} is still on place #{top_list.get_pos(name)}"
-            try:
-                # This is the message that will be sent if the command was recognized
-                await message.channel.send(response)
-            except:
-                # If not recognized message
-                pass
+                    response = f"{name} is still on place #{top_list.get_pos(name)}"
+
+
+            await message.channel.send(response)
     else:
         print(message.guild)
 
