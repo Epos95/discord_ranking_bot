@@ -2,6 +2,7 @@ import memory
 import os
 
 import discord
+import datetime
 # Had this for the intent
 #from discord.ext import commands
 from dotenv import load_dotenv
@@ -85,6 +86,13 @@ async def on_message(message):
                 response = f"{message.content.split()[1]} is not avalible"
             
             await message.channel.send(response)
+        
+        elif message.content.split()[0] == "!ping":
+            # This does not work, because of timezones
+            time_sent = int(message.created_at.strftime("%y%m%d%H%M%S%f")) // 100
+            time_now = int(datetime.datetime.now().strftime("%y%m%d%H%M%S%f"))//100
+            print(f"{(time_now-time_sent)} ")
+            print(f"now {time_now} before {time_sent}")
 
         # New giving or taking rating-points
         elif str(client.get_channel(message.channel.id)) == CHANNEL_RATING:
@@ -110,6 +118,7 @@ async def on_message(message):
             elif top_list.alias_id(name) == "Jane Doe":
                 response = f"{name} is not registered as a person"
 
+            # If everything works as it should
             else:
                 pos1 = top_list.get_pos(name)
                 commands[message.content[0]](top_list.alias_id(name))
