@@ -108,7 +108,7 @@ class Stats():
     def alias_id(self, name):
         name = name.capitalize()
         try:
-            return self.__memory["alias"][name]
+            return str(self.__memory["alias"][name])
         except:
             # This should return discord nickname
             return "Jane Doe"

@@ -95,7 +95,7 @@ async def on_message(message):
             print(f"now {time_now} before {time_sent}")
 
         # New giving or taking rating-points
-        elif str(client.get_channel(message.channel.id)) == CHANNEL_RATING:
+        elif (message.content[0] == "+" or message.content[0] == "-") and str(client.get_channel(message.channel.id)) == CHANNEL_RATING:
             content = message.content
             name = ""
             reason = ""
@@ -120,6 +120,7 @@ async def on_message(message):
 
             # If everything works as it should
             else:
+                print(f"sender {top_list.alias_id(name)} reciever {str(message.author.id)}")
                 pos1 = top_list.get_pos(name)
                 commands[message.content[0]](top_list.alias_id(name))
                 commands["history"](sender=str(message.author.id), reciever=top_list.alias_id(name), reason=reason, vote=message.content[0])
