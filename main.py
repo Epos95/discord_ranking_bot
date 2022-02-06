@@ -14,12 +14,29 @@ CHANNEL = "rating"
 # Creating a obj for the memory and stuff
 top_list = memory.Stats()
 
-commands = {"-": top_list.subtract, "+": top_list.add} # This will store different commands and stuff
+# This will store different commands and stuff
+commands = {
+    "-": top_list.subtract,
+    "+": top_list.add,
+    "!ranking" : ranking,
+} 
 
 # This is the handle to the discord api
 client = discord.Client()
 
 
+# Prints the points of each person.
+async def ranking(m): 
+    longest_name = max(map(len, top_list.get_list()))
+    response = ("-" * (longest_name + 12)) + "\n"
+
+    for counter, person in enumerate(top_list.get_list()):
+        response += f"| \#{str(counter+1)} {top_list.get_stat(person)}"
+
+    response += ("-" * (longest_name + 12))
+    await m.channel.send(response)
+
+async def 
 
 # If something happens on discord
 @client.event
@@ -31,23 +48,24 @@ async def on_message(message):
     if message.author.id == "170604046388953089":
         print("YES")
     """
-    if str(message.guild) == GUILD: # Remove "or 1" if running for real
-        #print("active bot")
 
-        # This is just so the bot does not answer itself and become a loop
-        if message.author == client.user:
-            return
+    # This is just so the bot does not answer itself and become a loop
+    if message.author == client.user:
+        return
+
+    if str(message.guild) == GUILD: # Remove "or 1" if running for real
+
+        # Once methods are rewritten a bit the commands structure can be even more generic in such a way that:
+        #
+        # if message.content.split()[0] in commands:
+        #     commands[message.content.split()[0]](message)
+        #
+        # The args can be made generic by letting the functions in commands use **kwargs and *args or wahtever
 
         # If !stats is written, it will print all the points for each person. The other stuff is for formating
-        if message.content == "!ranking":
-            longest_name = max(map(len, top_list.get_list()))
-            response = ("-" * (longest_name + 12)) + "\n"
-
-            for counter, person in enumerate(top_list.get_list()):
-                response += f"| \#{str(counter+1)} {top_list.get_stat(person)}"
-
-            response += ("-" * (longest_name + 12))
-            await message.channel.send(response)
+        if message.content.split()[0] == "!ranking":
+            # Call the command (Which we know exists) with the correct args
+            commands[message.content.split()[0]](message)
 
         elif message.content.split()[0] == "!alias":
             print("alias")
