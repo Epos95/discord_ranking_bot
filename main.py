@@ -133,7 +133,33 @@ async def on_message(message):
 
 
             await message.channel.send(response)
+
+        # Will grab the last person (not the same one sending the !grab or the bot)'s
+        # message, if and @ is provided it will find the latest message by them and
+        # then grab that
+        elif message.content.split()[0] == "!grab":
+            msg = message
+            if len(msg.mentions) == 1:
+                user = msg.mentions[0]
+
+                async for message in msg.channel.history(limit=200):
+                    if message.author == user:
+                        await add_quote(message, msg.author.name, msg.created_at)
+                        return
+
+            else:
+                # this limit is flexible
+                async for message in msg.channel.history(limit=200):
+                    if message.author != client.user and message.author != msg.author:
+                        # Rewrite this to use the nicknames of users instead
+                        await add_quote(message, msg.author.name, msg.created_at)
+                        return
+
     else:
         print(message.guild)
+
+# Cant be assed to fix this and the interaction with the "database" tonight lmao
+async def add_quote(a,b,c):
+    print(a.content, b, c)
 
 client.run(TOKEN)
