@@ -18,4 +18,4 @@ GUILD=[Server name]
 ```
 * stats.json
 
-The stats.json needs to be added with a simple structure. First time you can run the function setup in memory, not sure if it will work tho :))
+The stats.json needs to be added with a simple structure. Hehe ;) 

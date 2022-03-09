@@ -8,7 +8,7 @@ import utils
 class Stats():
     # Just initialation, loading json file and making it usable
     def __init__(self):
-        self.__savefile = "stats.json"
+        self.__savefile = "../stats.json"
         
         fh = open(self.__savefile, "r")
         self.__memory = json.load(fh)
@@ -92,7 +92,7 @@ class Stats():
     def get_pos(self, name):
         name = self.alias_id(utils.fix_str(name))
         top_list = self.get_list()
-        for i in range(len(top_list)-1):
+        for i in range(len(top_list)):
             if top_list[i] == name:
                 return i+1
         return 0

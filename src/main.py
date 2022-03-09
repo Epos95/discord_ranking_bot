@@ -52,7 +52,8 @@ commands = {
 @client.event
 # If this something is a message
 async def on_message(message):
-    print(message.author.id)
+    # Print author
+    #print(message.author.id)
 
     """
     if message.author.id == "170604046388953089":
@@ -63,7 +64,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if str(message.guild) == GUILD: # Remove "or 1" if running for real
+    if str(message.guild) == GUILD: 
         # Once methods are rewritten a bit the commands structure can be even more generic in such a way that:
         #
         # if message.content.split()[0] in commands:
@@ -72,7 +73,10 @@ async def on_message(message):
         # The args can be made generic by letting the functions in commands use **kwargs and *args or wahtever
 
         # If !ranking is written, it will print all the points for each person. The other stuff is for formating
+
+        print(message.content.split()[0])            
         if message.content.split()[0] == "!ranking":
+            print("yes")
             # Call the command (Which we know exists) with the correct args
             await commands[message.content.split()[0]](message)
 
@@ -115,7 +119,7 @@ async def on_message(message):
                 response = "You are not allowed to vote on yourself"
             
             # This part could be switched out with iterating over all server members + alias
-            elif top_list.alias_id(name) == "Jane Doe":
+            elif top_list.alias_id(name) == "Jane Doe": 
                 response = f"{name} is not registered as a person"
 
             # If everything works as it should
@@ -134,6 +138,6 @@ async def on_message(message):
 
             await message.channel.send(response)
     else:
-        print(message.guild)
+        print(f"Message sent in {message.guild}")
 
 client.run(TOKEN)
