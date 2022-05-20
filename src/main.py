@@ -94,7 +94,7 @@ async def on_message(message):
                 response = f"Your new name is {message.content.split()[1]}"
             else:
                 response = f"{message.content.split()[1]} is not avalible"
-            
+
             await message.channel.send(response)
         
         elif message.content.split()[0] == "!ping":
@@ -112,7 +112,15 @@ async def on_message(message):
                 #print(message.reference)
                 async for old_message in message.channel.history(limit=100):
                     if old_message.id == message.reference.message_id:
-                        top_list.save_cite(old_message.author.id, old_message.content, old_message.id)
+                        return_value = top_list.save_cite(old_message.author.id, old_message.content, old_message.id)
+                        if return_value == 1:
+                            response = "Message was cited"
+                        elif return_value == 0:
+                            response = "There was some problem with citing that message"
+
+                        await message.channel.send(response)
+                    
+
 
         # New giving or taking rating-points
         elif (message.content[0] == "+" or message.content[0] == "-") and str(message.channel) == CHANNEL_RATING:
