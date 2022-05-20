@@ -104,7 +104,6 @@ async def on_message(message):
             print(f"{(time_now-time_sent)} ")
             print(f"now {time_now} before {time_sent}")
 
-
         elif message.content.split()[0] == "!cite":
             # This will cite a sent message
             if message.reference == None:
