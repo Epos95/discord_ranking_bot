@@ -1,5 +1,6 @@
 # imports from lib
 import datetime
+from email import message
 import json
 
 # Other selfwritten files
@@ -13,16 +14,6 @@ class Stats():
         fh = open(self.__savefile, "r")
         self.__memory = json.load(fh)
         fh.close()
-
-    # This is just a quick write over everything solution
-    def setup(self):
-        self.__memory = {
-            "top": {"Leo": 0, "Max": 0, "Carl": 0},
-            "reasons": {
-                "Leo": ["hej", "test"]
-            }
-        }
-        self.__save()
 
     # This is for adding points to a person
     def add(self, name):
@@ -137,6 +128,12 @@ class Stats():
 
         utils.fix_str(new_name)
         self.__memory["names"][person_id] = new_name
+        self.__save()
+        return 1
+
+    def save_cite(self, person_id, cited_message, cited_message_id):
+        #print("person_id", person_id, ", message", cited_message, "cited id", cited_message_id)
+        self.__memory["citation"][str(cited_message_id)] = [str(person_id), str(cited_message)]
         self.__save()
         return 1
 

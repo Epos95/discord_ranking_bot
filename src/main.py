@@ -1,5 +1,5 @@
-import memory
 import os
+import memory
 
 import discord
 import datetime
@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('GUILD')
-CHANNEL = "rating"
 CHANNEL_RATING = "rating"
 
 
@@ -44,7 +43,8 @@ commands = {
     "+": top_list.add,
     "!ranking": ranking,
     "!name": top_list.change_name,
-    "history": top_list.history
+    "history": top_list.history,
+    "!cite": top_list.save_cite
 } 
 
 
@@ -64,7 +64,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if str(message.guild) == GUILD: 
+    if str(message.guild) == GUILD:
         # Once methods are rewritten a bit the commands structure can be even more generic in such a way that:
         #
         # if message.content.split()[0] in commands:
@@ -74,11 +74,17 @@ async def on_message(message):
 
         # If !ranking is written, it will print all the points for each person. The other stuff is for formating
 
-        print(message.content.split()[0])            
+        # To see if its a reply of a previous message
+        #print(message.reference)            
+
         if message.content.split()[0] == "!ranking":
-            print("yes")
-            # Call the command (Which we know exists) with the correct args
-            await commands[message.content.split()[0]](message)
+            if str(message.channel) == CHANNEL_RATING:
+                print("Running the ranking script")
+                # Call the command (Which we know exists) with the correct args
+                await commands[message.content.split()[0]](message)
+            else:
+                print("Command sent in wrong channel")
+                # This might should tell the person where it is possible to say some commands?
 
         elif message.content.split()[0] == "!alias":
             print("alias")
@@ -98,8 +104,19 @@ async def on_message(message):
             print(f"{(time_now-time_sent)} ")
             print(f"now {time_now} before {time_sent}")
 
+
+        elif message.content.split()[0] == "!cite":
+            # This will cite a sent message
+            if message.reference == None:
+               return 
+            else:
+                #print(message.reference)
+                async for old_message in message.channel.history(limit=100):
+                    if old_message.id == message.reference.message_id:
+                        top_list.save_cite(old_message.author.id, old_message.content, old_message.id)
+
         # New giving or taking rating-points
-        elif (message.content[0] == "+" or message.content[0] == "-") and str(client.get_channel(message.channel.id)) == CHANNEL_RATING:
+        elif (message.content[0] == "+" or message.content[0] == "-") and str(message.channel) == CHANNEL_RATING:
             content = message.content
             name = ""
             reason = ""
