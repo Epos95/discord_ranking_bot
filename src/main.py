@@ -112,13 +112,33 @@ async def on_message(message):
                 response = f"\"{cited_message[1]}\" ~ {cited_message[0]}"
             else:
                 #print(message.reference)
-                async for old_message in message.channel.history(limit=100):
+                search_limit = 100
+                try:
+                    if int(message.content.split()[1]) > search_limit:
+                        search_limit = int(message.content.split()[1])
+                except:
+                    pass
+
+                if search_limit > 1000000:
+                    response = "To high search limit, max limit is 1000000"
+                    await message.channel.send(response)
+                    return -1
+
+                async for old_message in message.channel.history(limit=search_limit):
+                    response = ""
                     if old_message.id == message.reference.message_id:
                         return_value = top_list.save_cite(old_message.author.id, old_message.content, old_message.id)
                         if return_value == 1:
                             response = "Message was cited"
-                        elif return_value == 0:
+                            break
+                        elif return_value == -1:
                             response = "There was some problem with citing that message"
+                            break
+                    
+                print(response)
+                if response == "":
+                    response = "Message could not be found, try higher search limit ex) \"!cite 10000\""
+
 
             await message.channel.send(response)
             return 1
