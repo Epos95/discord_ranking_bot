@@ -18,14 +18,14 @@ class Stats():
     # This is for adding points to a person
     def add(self, name):
         name = utils.fix_str(name)
-        print(f"name: {name}")
+        #print(f"name: {name}")
         if self.__is_person(name):
             self.__memory["top"][name] += 1
         else:
             # If the name was not recognized
             self.__create(name, 1)
 
-        print(self.__memory["top"])
+        #print(self.__memory["top"])
         self.__save()
 
     # This is for subtracting points from person
@@ -88,7 +88,7 @@ class Stats():
                 return i+1
         return 0
     
-    # Works, just needs to be implemented
+    # This will save stuff to the memory
     def history(self, sender, reciever, reason, vote):
         vote = utils.vote_meaning(vote)
         timeholder = datetime.datetime.now()

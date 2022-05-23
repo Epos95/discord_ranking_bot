@@ -11,8 +11,10 @@ def vote_meaning(sign):
     return "Undefined"
 
 # This function will return what type of vote, voter, votie, reason.
-# arg should be the CONTENT of the message.
-def get_vote(content):
+# arg should be the whole message, not just the content.
+def get_vote(message):
+    content = message.content
+    author = message.author.id
     name = ""
     reason = ""
     is_reason = False
@@ -25,4 +27,6 @@ def get_vote(content):
             is_reason = True
         elif i not in character_not_name:
             name += i
-    pass
+    
+    vote_info = {"author_id": str(author), "name": str(name), "reason": str(reason)}
+    return vote_info

@@ -3,6 +3,7 @@ import memory
 
 import discord
 import datetime
+import commands_func
 # Had this for the intent
 #from discord.ext import commands
 from dotenv import load_dotenv
@@ -24,6 +25,8 @@ top_list = memory.Stats()
 
 # This is the handle to the discord api
 client = discord.Client()
+
+ranking_handle = commands_func.Ranking(channel_rating=CHANNEL_RATING, memory_handle=top_list)
 
 
 # Prints the points of each person.
@@ -138,52 +141,21 @@ async def on_message(message):
                 print(response)
                 if response == "":
                     response = "Message could not be found, try higher search limit ex) \"!cite 10000\""
+        
+        elif message.content[0] == "+":
+            print("here")
+            if await ranking_handle.add(message) == -1:
+                print("Error  wohooo")
 
 
-            await message.channel.send(response)
+            #await message.channel.send(response)
             return 1
 
 
         # New giving or taking rating-points
-        elif (message.content[0] == "+" or message.content[0] == "-") and str(message.channel) == CHANNEL_RATING:
-            content = message.content
-            name = ""
-            reason = ""
-            is_reason = False
-            character_not_name = [' ', '+', '-']
-            # This for-loop will take out name and reason in variables form content (message.content)
-            for i in content:
-                if i == '(' or is_reason:
-                    if i != '(' and i != ')':
-                        reason += i
-                    is_reason = True
-                elif i not in character_not_name:
-                    name += i
-            
-            # Making sure it is not allowed to vote for oneself
-            if top_list.alias_id(name) == str(message.author.id):
-                response = "You are not allowed to vote on yourself"
-            
-            # This part could be switched out with iterating over all server members + alias
-            elif top_list.alias_id(name) == "Jane Doe": 
-                response = f"{name} is not registered as a person"
-
-            # If everything works as it should
-            else:
-                print(f"sender {top_list.alias_id(name)} reciever {str(message.author.id)}")
-                pos1 = top_list.get_pos(name)
-                commands[message.content[0]](top_list.alias_id(name))
-                commands["history"](sender=str(message.author.id), reciever=top_list.alias_id(name), reason=reason, vote=message.content[0])
-                pos2 = top_list.get_pos(name)
-
-                if pos1 != pos2: 
-                    response = f"{name} was moved {pos1-pos2} steps to place #{top_list.get_pos(name)}"
-                else:
-                    response = f"{name} is still on place #{top_list.get_pos(name)}"
-
-
-            await message.channel.send(response)
     else:
-        print(f"Message sent in {message.guild}")
+        pass
+
+        #print(f"Message sent in {message.guild}")
 
 client.run(TOKEN)
