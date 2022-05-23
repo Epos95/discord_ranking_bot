@@ -142,7 +142,6 @@ async def on_message(message):
 
             await message.channel.send(response)
             return 1
-                    
 
 
         # New giving or taking rating-points
