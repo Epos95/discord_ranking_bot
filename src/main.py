@@ -107,7 +107,9 @@ async def on_message(message):
         elif message.content.split()[0] == "!cite":
             # This will cite a sent message
             if message.reference == None:
-               return 
+                # This is just to print a random cited message
+                cited_message = top_list.get_cite()
+                response = f"\"{cited_message[1]}\" ~ {cited_message[0]}"
             else:
                 #print(message.reference)
                 async for old_message in message.channel.history(limit=100):
@@ -118,7 +120,8 @@ async def on_message(message):
                         elif return_value == 0:
                             response = "There was some problem with citing that message"
 
-                        await message.channel.send(response)
+            await message.channel.send(response)
+            return 1
                     
 
 

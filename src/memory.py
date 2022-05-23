@@ -1,7 +1,7 @@
 # imports from lib
 import datetime
-from email import message
 import json
+import random 
 
 # Other selfwritten files
 import utils
@@ -133,9 +133,22 @@ class Stats():
 
     def save_cite(self, person_id, cited_message, cited_message_id):
         #print("person_id", person_id, ", message", cited_message, "cited id", cited_message_id)
-        self.__memory["citation"][str(cited_message_id)] = [str(person_id), str(cited_message)]
+        count_of_citations = len(self.__memory["citation"])
+        self.__memory["citation"][count_of_citations]= [str(person_id), str(cited_message)]
         self.__save()
         return 1
+    
+    def get_cite(self, number=None):
+        if number != None:
+            # This should maybe print a special quote, but not quite sure how it should be implemented.
+            return 0
+        
+        count_of_citations = len(self.__memory["citation"])
+        random_cite_id = random.randint(0, count_of_citations-1)
+        id = self.__memory["citation"][str(random_cite_id)][0]
+        name = self.__memory["names"][id]
+        return_tuple = (name ,self.__memory["citation"][str(random_cite_id)][1])
+        return return_tuple
 
                     
 # If starting this file as main
