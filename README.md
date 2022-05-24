@@ -5,7 +5,7 @@ Simple bot for discord. As for now it has a ranking feature. There will soon be 
 * !ranking-  stats will print the toplist in order and display the points for the person
 * \+ [name] ([reason]) - will give a score to a person
 * \- [name] ([reason]) - Will remove a score from a person
-* !name [nickname] - Sets new nickname for the ranking
+* !name [nickname] - Sets new nickname 
 
 
 ## Things that needs to be added manually:
@@ -17,8 +17,6 @@ DISCORD_TOKEN=[Actual token]
 GUILD=[Server name]
 ```
 * stats.json
-
-The stats.json needs to be added with a simple structure. Hehe ;) 
 
 ## Future structure of project:
 The structure of the whole project needs to be updated. This means that there can not be a main that makes all the computing and stuff.
