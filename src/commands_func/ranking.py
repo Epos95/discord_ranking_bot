@@ -23,7 +23,8 @@ class Ranking:
     async def __is_good_vote(self, message):
         if str(message.channel) != self.CHANNEL_RATING:
             response = "Wrong channel for command"
-            await message.channel.send(response)
+            await self.__send_message(response, message)
+            #await message.channel.send(response)
             return -1
 
         vote_info = utils.get_vote(message)
@@ -42,6 +43,10 @@ class Ranking:
         
         return 1 # If not returned by now it is a allowed vote
 
+    async def __send_message(self, response, message):
+            await message.channel.send(response)
+
+
     # This function is called when giving someone +
     async def add(self, message):
         # AHHHHH PROBLEM, need to run the check BEFORE it continues. BUT I need await for sending the message, not fun.
@@ -50,8 +55,9 @@ class Ranking:
         # Return the statement that needs to be sent OR the OK-go signal
         # Run the function, twice. Once for the yes or no. Once for sending the accurate message
         # OR gitgod :/
-        if not await asyncio.run(self.__is_good_vote(message)):
+        if not await self.__is_good_vote(message):
             return -1
+        
 
         vote_info = utils.get_vote(message)
         ranking_before_vote = self.memory.get_pos(vote_info["name"])
