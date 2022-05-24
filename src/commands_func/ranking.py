@@ -1,4 +1,3 @@
-import asyncio
 import utils
 class Ranking:
     def __init__(self, **kwargs):
@@ -23,9 +22,8 @@ class Ranking:
     async def __is_good_vote(self, message):
         if str(message.channel) != self.CHANNEL_RATING:
             response = "Wrong channel for command"
-            await self.__send_message(response, message)
-            #await message.channel.send(response)
-            return -1
+            await message.channel.send(response)
+            return 0
 
         vote_info = utils.get_vote(message)
 
@@ -33,28 +31,18 @@ class Ranking:
         if self.memory.alias_id(vote_info["name"]) == vote_info["author_id"]:
             response = "You are not allowed to vote on yourself"
             await message.channel.send(response)
-            return -1
+            return 0
         
         # Can only vote on existing people
         if self.memory.alias_id(vote_info["name"]) == "Jane Doe":
             response = f"{vote_info['name']} is not registered as a person"
             await message.channel.send(response)
-            return -1
-        
+            return 0
+
         return 1 # If not returned by now it is a allowed vote
-
-    async def __send_message(self, response, message):
-            await message.channel.send(response)
-
 
     # This function is called when giving someone +
     async def add(self, message):
-        # AHHHHH PROBLEM, need to run the check BEFORE it continues. BUT I need await for sending the message, not fun.
-        # Solutions?
-        # Make a function for sending the message, only that function will be async
-        # Return the statement that needs to be sent OR the OK-go signal
-        # Run the function, twice. Once for the yes or no. Once for sending the accurate message
-        # OR gitgod :/
         if not await self.__is_good_vote(message):
             return -1
         
