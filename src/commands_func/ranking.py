@@ -8,7 +8,7 @@ class Ranking:
     # This will print the current top list of the ranking
     # The fancy stuff is just formating to make it look good
     # Writtten by Epos95
-    def top_list(self, message):
+    async def ranking(self, message):
         longest_name = max(map(len, self.memory.get_list()))
         response = ("-" * (longest_name + 12)) + "\n"
 
@@ -16,7 +16,7 @@ class Ranking:
             response += f"| \#{str(counter+1)} {self.memory.get_stat(person)}"
 
         response += ("-" * (longest_name + 12))
-        message.channel.send(response)
+        await message.channel.send(response)
     
     # This will check to make sure the vote is "good enough"
     async def __is_good_vote(self, message):
@@ -44,13 +44,13 @@ class Ranking:
     # This function is called when giving someone +
     async def add(self, message):
         if not await self.__is_good_vote(message):
+            # Will just return if conditions not met
             return -1
-        
 
         vote_info = utils.get_vote(message)
         ranking_before_vote = self.memory.get_pos(vote_info["name"])
         # This is the "adding part"
-        self.memory.add(vote_info["name"])
+        self.memory.add(self.memory.alias_id(vote_info["name"]))
         # Saving stuff to memory
         self.memory.history(vote_info["author_id"], self.memory.alias_id(vote_info["name"]), vote_info["reason"], message.content[0])
         ranking_after_vore = self.memory.get_pos(vote_info["name"])
@@ -64,14 +64,15 @@ class Ranking:
         await message.channel.send(response)
 
     # This function is called when giving someone -
-    def sub(self, message):
-        if not self.__is_good_vote(message):
+    async def sub(self, message):
+        if not await self.__is_good_vote(message):
+            # Will just return if conditions not met
             return -1
 
         vote_info = utils.get_vote(message)
         ranking_before_vote = self.memory.get_pos(vote_info["name"])
         # This is the "subtracting part"
-        self.memory.subtract(vote_info["name"])
+        self.memory.subtract(self.memory.alias_id(vote_info["name"]))
         # Saving stuff to memory
         self.memory.history(vote_info["author_id"], self.memory.alias_id(vote_info["name"]), vote_info["reason"], message.content[0])
         ranking_after_vore = self.memory.get_pos(vote_info["name"])
@@ -82,4 +83,4 @@ class Ranking:
         else:
             response = f"{vote_info['name']} is still on place #{self.memory.get_pos(vote_info['name'])}"
         
-        message.channel.send(response)
+        await message.channel.send(response)
