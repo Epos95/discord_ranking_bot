@@ -3,3 +3,4 @@
 
 from .ranking import Ranking
 from .citation import Citation
+from .name import Name

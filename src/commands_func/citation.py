@@ -6,7 +6,7 @@ class Citation:
     # This is the function that will be called when typing "!cite"
     async def cite(self, message):
         if message.reference == None:
-           await self.send_cite(message) 
+            await self.send_cite(message)
 
         search_limit = 100
         try:
@@ -23,22 +23,25 @@ class Citation:
         async for old_message in message.channel.history(limit=search_limit):
             response = ""
             if old_message.id == message.reference.message_id:
-                return_value = self.memory.save_cite(old_message.author.id, old_message.content, old_message.id)
+                return_value = self.memory.save_cite(
+                    old_message.author.id, old_message.content, old_message.id
+                )
                 if return_value == 1:
                     response = "Message was cited"
                     break
                 elif return_value == -1:
                     response = "There was some problem with citing that message"
                     break
-                
+
         if response == "":
-            response = "Message could not be found, try higher search limit ex) \"!cite 10000\""
+            response = (
+                'Message could not be found, try higher search limit ex) "!cite 10000"'
+            )
         await message.channel.send(response)
-        
 
 
 # This function will send a random cited message
 async def send_cite(self, message):
     cited_message = self.memory.get_cite()
-    response = f"\"{cited_message[1]}\" ~ {cited_message[0]}"
+    response = f'"{cited_message[1]}" ~ {cited_message[0]}'
     await message.channel.send(response)
