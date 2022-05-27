@@ -53,7 +53,4 @@ async def on_message(message):
         if message.content.split()[0] in commands:
             await commands[message.content.split()[0]](message)
 
-        # print(f"Message sent in {message.guild}")
-
-
 client.run(TOKEN)
