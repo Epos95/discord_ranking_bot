@@ -50,6 +50,8 @@ async def on_message(message):
 
         # Here it should be a counter for messages sent on the server.
 
+        # If there is a image, this will throw a error
+        # list index out of range
         if message.content.split()[0] in commands:
             await commands[message.content.split()[0]](message)
 

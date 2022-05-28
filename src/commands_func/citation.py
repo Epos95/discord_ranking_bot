@@ -23,6 +23,12 @@ class Citation:
         async for old_message in message.channel.history(limit=search_limit):
             response = ""
             if old_message.id == message.reference.message_id:
+                # Error handling for empty messages or images
+                if old_message.content == "":
+                    response = "Message is empty or a image. Images can not be cited right now"
+                    await message.channel.send(response)
+                    return -1
+
                 return_value = self.memory.save_cite(
                     old_message.author.id, old_message.content, old_message.id
                 )

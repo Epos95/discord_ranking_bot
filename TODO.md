@@ -1,5 +1,4 @@
 # TODO
-
 ## First
 * Alias from discord
 * Connect list with people in the server, so people in the server is automatically in the list or atleast that people can be voted on from beeing in the server
@@ -25,7 +24,10 @@ The project should always have right type of errors. TypeErrors and other stuff 
 Make the program not beeing case sensitive for commands. This would be a good thing.
 
 ### Unit tests
-Start testing functions with unit tests. This for making sure the program is running without problems
+Start testing functions with unit tests. This for making sure the program is running without problems. This is kind of a started project but far from done. There is at least one half running unittest implemented right now
+
+### Adding citing of a image
+Right now images can not be cited. But it should not be that hard to implement? Find how images are stored in a message, I would guess it is a link. It that is the case just save the url in the memory. Then there needs to be some modification when sending a cite.
 
 ## A little later
 ### Saving history
@@ -40,7 +42,6 @@ This is mentioned before in the "Structure of project" but the memory part needs
 * Counting messages sent on the server
 * Welcome new people
 * Make ping work
-
 
 ## Much later
 * Music bot
