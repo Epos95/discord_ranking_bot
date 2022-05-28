@@ -1,9 +1,15 @@
 def fix_str(name):
+    if type(name) != str:
+        raise TypeError(f"Wrong type in utilfunction fix_str, got {type(name)} when expecting str")
+
     name = name.replace(" ", "").capitalize()
     return name
 
 
 def vote_meaning(sign):
+    if type(sign) != str:
+        raise TypeError(f"Wrong type in utilfunction vote_meaning, got {type(sign)} when expecting str")
+
     if sign == "+":
         return "Up"
     if sign == "-":
