@@ -21,7 +21,7 @@ class Stats:
         if type(name) != str:
             raise TypeError("The name must be a string")
 
-        name = utils.fix_str(name) 
+        name = utils.fix_str(name)
         # print(f"name: {name}")
         if self.__is_person(name):
             self.__memory["top"][name] += 1

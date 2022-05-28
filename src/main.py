@@ -53,4 +53,5 @@ async def on_message(message):
         if message.content.split()[0] in commands:
             await commands[message.content.split()[0]](message)
 
+
 client.run(TOKEN)
