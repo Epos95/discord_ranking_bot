@@ -13,10 +13,6 @@ This idea will build up a coin system that will give money depending on what kin
 * etc
 Depending on the bet the person could be able to win money, with different amount depending on how hard of a bet it is. The coins will later be usable for buing different roles and stuff like that.
 
-### Adding cite function
-This could be done with just saving cite in the json and then printing random quotes every week or something. Or it could be done with the implementation said + the option to vote from 1-10 how good the quote is and then having a tier-list for the highest score. One way to implement it would be with reacting on the quote with a number 1-10 or something similar.
-
-
 ### Making the bot generical
 The bot does not support adding new persons automatically, this should be a feature that is added. Optimal would be that people are added when someone votes on them. But there is some problem with how to know what the id of the person is etc. So this needs some thinking.
 
