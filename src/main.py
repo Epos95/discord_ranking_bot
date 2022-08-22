@@ -18,7 +18,7 @@ CHANNEL_RATING = "rating"
 memory_handle = memory.Stats()
 
 # This is the handle to the discord api
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.all())
 
 # Just packed together so it is easy to send as kwarg
 kwarg_send = {"channel_rating": CHANNEL_RATING, "memory_handle": memory_handle}
@@ -42,6 +42,7 @@ commands = {
 @client.event
 # If this something is a message
 async def on_message(message):
+    print(message.author.id)
     # This is just so the bot does not answer itself and become a loop
     if message.author == client.user:
         return
