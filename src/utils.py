@@ -37,10 +37,8 @@ def get_vote(message, memoryHandle):
     character_not_name = [" ", "+", "-"]
     # This for-loop will take out name and reason in variables form content (message.content)
 
-    print(content)
     tagVoteName = re.search("<@([0-9]{18})>", content)
     if tagVoteName:
-        print(tagVoteName.group(1))
         name = memoryHandle.id_name(tagVoteName.group(1))
     for i in content:
         if i == "(" or is_reason:
