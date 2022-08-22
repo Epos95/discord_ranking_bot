@@ -1,6 +1,5 @@
 import utils
 
-
 class Ranking:
     def __init__(self, **kwargs):
         self.CHANNEL_RATING = kwargs["channel_rating"]
@@ -27,7 +26,7 @@ class Ranking:
             await message.channel.send(response)
             return 0
 
-        vote_info = utils.get_vote(message)
+        vote_info = utils.get_vote(message, self.memory)
 
         # Can not vote on yourself
         if self.memory.alias_id(vote_info["name"]) == vote_info["author_id"]:
@@ -49,7 +48,7 @@ class Ranking:
             # Will just return if conditions not met
             return -1
 
-        vote_info = utils.get_vote(message)
+        vote_info = utils.get_vote(message, self.memory)
         ranking_before_vote = self.memory.get_pos(vote_info["name"])
         # This is the "adding part"
         self.memory.add(self.memory.alias_id(vote_info["name"]))
@@ -76,7 +75,7 @@ class Ranking:
             # Will just return if conditions not met
             return -1
 
-        vote_info = utils.get_vote(message)
+        vote_info = utils.get_vote(message, self.memory)
         ranking_before_vote = self.memory.get_pos(vote_info["name"])
         # This is the "subtracting part"
         self.memory.subtract(self.memory.alias_id(vote_info["name"]))
