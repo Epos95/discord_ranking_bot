@@ -42,7 +42,7 @@ commands = {
 @client.event
 # If this something is a message
 async def on_message(message):
-    print(message.author.id)
+    #print(message.author.id)
     # This is just so the bot does not answer itself and become a loop
     if message.author == client.user:
         return
@@ -54,6 +54,7 @@ async def on_message(message):
         # If there is a image, this will throw a error
         # list index out of range
         if message.content.split()[0] in commands:
+            print("in commands")
             await commands[message.content.split()[0]](message)
 
 
