@@ -54,7 +54,6 @@ async def on_message(message):
         # If there is a image, this will throw a error
         # list index out of range
         if message.content.split()[0] in commands:
-            print("in commands")
             await commands[message.content.split()[0]](message)
 
 
