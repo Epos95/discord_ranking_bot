@@ -16,6 +16,20 @@ class Stats:
         self.__memory = json.load(fh)
         fh.close()
 
+    # This is a counter for the messages sent on the server
+    def messageSend(self, message):
+        # For adding the header if not in memory already
+        if 'messageCount' not in self.__memory:
+            self.__memory['messageCount'] = {}
+            self.__memory['messageCount'][message.author.id] = 1
+        elif message.author.id not in self.__memory['messageCount']:
+            self.__memory['messageCount'][message.author.id] = 1
+        else:   
+            self.__memory['messageCount'][message.author.id] += 1
+        
+        self.__save()
+        return 1
+
     # This is for adding points to a person
     def add(self, name):
         if type(name) != str:

@@ -48,6 +48,7 @@ async def on_message(message):
         return
 
     if str(message.guild) == GUILD:
+        memory_handle.messageSend(message)
 
         # Here it should be a counter for messages sent on the server.
 
