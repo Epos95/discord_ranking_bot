@@ -7,6 +7,7 @@ class Citation:
     async def cite(self, message):
         if message.reference == None:
             await self.send_cite(message)
+            return 1
 
         search_limit = 100
         try:
@@ -46,8 +47,8 @@ class Citation:
         await message.channel.send(response)
 
 
-# This function will send a random cited message
-async def send_cite(self, message):
-    cited_message = self.memory.get_cite()
-    response = f'"{cited_message[1]}" ~ {cited_message[0]}'
-    await message.channel.send(response)
+    # This function will send a random cited message
+    async def send_cite(self, message):
+        cited_message = self.memory.get_cite()
+        response = f'"{cited_message[1]}" ~ {cited_message[0]}'
+        await message.channel.send(response)
