@@ -2,6 +2,7 @@
 # The filename should also be changed
 # Name suggestion is "stats"
 
+
 class Counting_messages:
     def __init__(self):
         pass
@@ -29,7 +30,7 @@ class Counting_messages:
         else:
             if message.content.split()[1] == "own":
                 self.own_ranking(message)
-            
+
         # This is the general function that is called when a person calls for the ranking command
         pass
 

@@ -25,7 +25,9 @@ class Citation:
             if old_message.id == message.reference.message_id:
                 # Error handling for empty messages or images
                 if old_message.content == "":
-                    response = "Message is empty or a image. Images can not be cited right now"
+                    response = (
+                        "Message is empty or a image. Images can not be cited right now"
+                    )
                     await message.channel.send(response)
                     return -1
 

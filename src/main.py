@@ -37,8 +37,8 @@ commands = {
     "!name": name_handle.name,
     "!ranking": ranking_handle.ranking,
     "!cite": citation_handle.cite,
-    "!votes_by" : history_handle.cast_by_user,
-    "!votes_on" : history_handle.cast_on_user,
+    "!votes_by": history_handle.cast_by_user,
+    "!votes_on": history_handle.cast_on_user,
 }
 
 # If something happens on discord
