@@ -1,7 +1,7 @@
 import re
 
 
-#from memory import Stats
+#from memory import Memory
 
 def fix_str(name):
     if type(name) != str:

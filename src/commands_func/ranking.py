@@ -4,7 +4,6 @@ class Ranking:
     def __init__(self, **kwargs):
         self.CHANNEL_RATING = kwargs["channel_rating"]
         self.memory = kwargs["memory_handle"]
-        pass
 
     # This will print the current top list of the ranking
     # The fancy stuff is just formating to make it look good

@@ -7,7 +7,7 @@ import random
 import utils
 
 
-class Stats:
+class Memory:
     # Just initialation, loading json file and making it usable
     def __init__(self):
         self.__savefile = "../stats.json"
@@ -193,7 +193,7 @@ class Stats:
 
 # If starting this file as main
 if __name__ == "__main__":
-    test = Stats()
+    test = Memory()
     # test.setup()
     # print(test.alias_id("hej"))
     # test.history("From", "To", "Reasoning", "-")

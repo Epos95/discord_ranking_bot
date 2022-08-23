@@ -5,7 +5,7 @@ import memory  # How to import from another folder???? Ahhhhhhh
 class TestMemory(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(TestMemory, self).__init__(*args, **kwargs)
-        self.handle = memory.Stats()
+        self.handle = memory.Memory()
 
     def test_types(self):
         # This will test that the arguments raises TypeErrors

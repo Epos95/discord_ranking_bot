@@ -2,7 +2,7 @@ import os
 import memory
 
 import discord
-from commands_func import Ranking, Citation, Name
+from commands_func import Ranking, Citation, Name, Stats
 
 # Had this for the intent
 from dotenv import load_dotenv
@@ -15,7 +15,7 @@ CHANNEL_RATING = "rating"
 
 
 # Creating a obj for the memory and stuff
-memory_handle = memory.Stats()
+memory_handle = memory.Memory()
 
 # This is the handle to the discord api
 client = discord.Client(intents=discord.Intents.all())
@@ -27,6 +27,7 @@ kwarg_send = {"channel_rating": CHANNEL_RATING, "memory_handle": memory_handle}
 ranking_handle = Ranking(**kwarg_send)
 citation_handle = Citation(**kwarg_send)
 name_handle = Name(**kwarg_send)
+stats_handle = Stats(**kwarg_send)
 
 
 # This will store different commands and stuff
@@ -36,6 +37,7 @@ commands = {
     "!name": name_handle.name,
     "!ranking": ranking_handle.ranking,
     "!cite": citation_handle.cite,
+    "!stats": stats_handle.stats,
 }
 
 # If something happens on discord
@@ -51,7 +53,11 @@ async def on_message(message):
         memory_handle.messageSend(message)
 
         if ' ' in message.content and message.content.split()[0] in commands:
+            print("space in")
             await commands[message.content.split()[0]](message)
+        elif message.content in commands:
+            print("no space in")
+            await commands[message.content](message)
 
 
 client.run(TOKEN)
