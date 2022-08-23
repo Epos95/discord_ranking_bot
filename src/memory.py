@@ -176,6 +176,9 @@ class Stats:
         return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
         return return_tuple
 
+    def get_memory(self):
+        return self.__memory
+
 
 # If starting this file as main
 if __name__ == "__main__":

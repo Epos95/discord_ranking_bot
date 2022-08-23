@@ -3,44 +3,54 @@ class History:
 		self.memory = kwargs["memory_handle"]
 
 	def __get_votes_by(self, username):
-		json = self.memory.__memory
-		
-		messages = []
-		for message in json: 
-			if message["sender"] in username:
-				messages.append(message)
+		id = self.memory.alias_id(username)
+		json = self.memory.get_memory()["voting_history"]
 
-		s = f"voting history for {username}:\n"
+		messages = []
+		for thing in json:
+			if thing["sender"] == username:
+				messages.append(thing)
+
+		s = [f"voting history for {self.memory.id_name(username)}:"]
 		for message in messages:
-			s += f" * \"{message['reason']}\" on {message['reciever']}"
-		
-		return messages
+			if message["reason"]:
+				m = f"for \"{message['reason']}\" "
+			else:
+				m = f""
+			s.append(f" * {message['vote']} vote {m}from {self.memory.id_name(message['sender'])} cast on {self.memory.id_name(message['reciever'])}")
+
+		return s
 
 	def __get_votes_on(self, username):
-		json = self.memory.__memory
-		
-		messages = []
-		for message in json: 
-			if message["reciever"] in username:
-				messages.append(message)
+		id = self.memory.alias_id(username)
+		json = self.memory.get_memory()["voting_history"]
 
-		s = f"voting history for {username}:\n"
+		messages = []
+		for thing in json:
+			if thing["reciever"] == username:
+				messages.append(thing)
+
+		s = [f"voting history on {self.memory.id_name(username)}:"]
 		for message in messages:
-			s += f" * \"{message['reason']}\" from {message['sender']}"
+			if message["reason"]:
+				m = f"for \"{message['reason']}\" "
+			else:
+				m = f""
+			s.append(f" * {message['vote']} vote {m}on {self.memory.id_name(message['reciever'])} cast by {self.memory.id_name(message['sender'])}")
 		
-		return messages
+		return s
 
 	async def cast_by_user(self, message):
-		message = message.split(" ")
+		content = message.content.split(" ")
 
 		n = None
-		if len(message) > 2:
+		if len(content) > 2:
 			# !votes_by epos95 7
-			user = message[1]
-			n = message[2]
-		if len(message) > 1:
-			# !votes_on epos95 
-			user = message[1]
+			user = content[1]
+			n = content[2]
+		if len(content) > 1:
+			# !votes_by epos95
+			user = content[1]
 		else:
 			# Not enough args
 			await message.channel.send("Not enough args!")
@@ -52,23 +62,23 @@ class History:
 			return 
 
 		if n:
-			votes = self.__get_votes_on(user_alias)[:n]
+			votes = "\n".join(self.__get_votes_by(user_alias)[:1+int(n)])
 		else:
-			votes = self.__get_votes_on(user_alias)
+			votes = "\n".join(self.__get_votes_by(user_alias))
 
 		await message.channel.send(votes)
 
 	async def cast_on_user(self, message):
-		message = message.split(" ")
+		content = message.content.split(" ")
 
 		n = None
-		if len(message) > 2:
-			# !votes_by epos95 7
-			user = message[1]
-			n = message[2]
-		if len(message) > 1:
+		if len(content) > 2:
+			# !votes_on epos95 7
+			user = content[1]
+			n = content[2]
+		if len(content) > 1:
 			# !votes_on epos95 
-			user = message[1]
+			user = content[1]
 		else:
 			# Not enough args
 			await message.channel.send("Not enough args!")
@@ -77,9 +87,10 @@ class History:
 		user_alias = self.memory.alias_id(user)
 		if user_alias == "Jane Doe":
 			await message.channel.send(f"Couldnt find username: {user}")
-			return 
-
+			return
 		if n:
-			votes = self.__get_votes_by(user_alias)[:n]
+			votes = "\n".join(self.__get_votes_on(user_alias)[:1+int(n)])
 		else:
-			votes = self.__get_votes_by(user_alias)
+			votes = "\n".join(self.__get_votes_on(user_alias))
+
+		await message.channel.send(votes)
