@@ -211,6 +211,9 @@ class Memory:
 
         return top
 
+    def get_memory(self):
+        return self.__memory
+
 
 # If starting this file as main
 if __name__ == "__main__":

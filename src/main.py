@@ -2,7 +2,7 @@ import os
 import memory
 
 import discord
-from commands_func import Ranking, Citation, Name, Stats
+from commands_func import Ranking, Citation, Name, Stats, History
 
 # Had this for the intent
 from dotenv import load_dotenv
@@ -27,6 +27,7 @@ kwarg_send = {"channel_rating": CHANNEL_RATING, "memory_handle": memory_handle}
 ranking_handle = Ranking(**kwarg_send)
 citation_handle = Citation(**kwarg_send)
 name_handle = Name(**kwarg_send)
+history_handle = History(**kwarg_send)
 stats_handle = Stats(**kwarg_send)
 
 
@@ -37,6 +38,8 @@ commands = {
     "!name": name_handle.name,
     "!ranking": ranking_handle.ranking,
     "!cite": citation_handle.cite,
+    "!votes_by": history_handle.cast_by_user,
+    "!votes_on": history_handle.cast_on_user,
     "!stats": stats_handle.stats,
 }
 
