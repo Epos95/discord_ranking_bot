@@ -22,10 +22,10 @@ class Stats:
         if 'messageCount' not in self.__memory:
             self.__memory['messageCount'] = {}
             self.__memory['messageCount'][message.author.id] = 1
-        elif message.author.id not in self.__memory['messageCount']:
-            self.__memory['messageCount'][message.author.id] = 1
+        elif str(message.author.id) not in self.__memory['messageCount']:
+            self.__memory['messageCount'][str(message.author.id)] = 1
         else:   
-            self.__memory['messageCount'][message.author.id] += 1
+            self.__memory['messageCount'][str(message.author.id)] += 1
         
         self.__save()
         return 1
