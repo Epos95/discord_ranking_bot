@@ -7,7 +7,7 @@ import random
 import utils
 
 
-class Stats:
+class Memory:
     # Just initialation, loading json file and making it usable
     def __init__(self):
         self.__savefile = "../stats.json"
@@ -15,6 +15,20 @@ class Stats:
         fh = open(self.__savefile, "r")
         self.__memory = json.load(fh)
         fh.close()
+
+    # This is a counter for the messages sent on the server
+    def messageSend(self, message):
+        # For adding the header if not in memory already
+        if 'messageCount' not in self.__memory:
+            self.__memory['messageCount'] = {}
+            self.__memory['messageCount'][message.author.id] = 1
+        elif str(message.author.id) not in self.__memory['messageCount']:
+            self.__memory['messageCount'][str(message.author.id)] = 1
+        else:   
+            self.__memory['messageCount'][str(message.author.id)] += 1
+        
+        self.__save()
+        return 1
 
     # This is for adding points to a person
     def add(self, name):
@@ -80,7 +94,7 @@ class Stats:
         fh.close()
 
     # This is a "To string" function for each person individualy
-    def get_stat(self, name):
+    def get_rating(self, name):
         name = utils.fix_str(name)
         if name in self.__memory["names"]:
             name = self.__memory["names"][name]
@@ -175,6 +189,27 @@ class Stats:
         name = self.__memory["names"][id]
         return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
         return return_tuple
+    
+    def get_message_count(self, name):
+        name = utils.fix_str(name)
+        if name in self.__memory["names"]:
+            name = self.__memory["names"][name]
+        x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
+        return x
+
+    def get_message_list(self):
+        top = []
+        for person in self.__memory["messageCount"]:
+            if len(top) == 0:
+                top.append(person)
+            else:
+                top.append(person)
+                for i in range(len(top) - 1, 0, -1):
+                    if self.__memory["messageCount"][person] > self.__memory["messageCount"][top[i - 1]]:
+                        top[i] = top[i - 1]
+                        top[i - 1] = person
+
+        return top
 
     def get_memory(self):
         return self.__memory
@@ -182,7 +217,7 @@ class Stats:
 
 # If starting this file as main
 if __name__ == "__main__":
-    test = Stats()
+    test = Memory()
     # test.setup()
     # print(test.alias_id("hej"))
     # test.history("From", "To", "Reasoning", "-")
