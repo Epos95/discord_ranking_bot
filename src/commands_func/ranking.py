@@ -13,7 +13,7 @@ class Ranking:
         response = ("-" * (longest_name + 12)) + "\n"
 
         for counter, person in enumerate(self.memory.get_list()):
-            response += f"| \#{str(counter+1)} {self.memory.get_stat(person)}"
+            response += f"| \#{str(counter+1)} {self.memory.get_rating(person)}"
 
         response += "-" * (longest_name + 12)
         await message.channel.send(response)

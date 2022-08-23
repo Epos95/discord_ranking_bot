@@ -52,11 +52,12 @@ async def on_message(message):
     if str(message.guild) == GUILD:
         memory_handle.messageSend(message)
 
+        # If the command is made with arg
         if ' ' in message.content and message.content.split()[0] in commands:
-            print("space in")
             await commands[message.content.split()[0]](message)
+        
+        # If the command does not have any args
         elif message.content in commands:
-            print("no space in")
             await commands[message.content](message)
 
 

@@ -94,7 +94,7 @@ class Memory:
         fh.close()
 
     # This is a "To string" function for each person individualy
-    def get_stat(self, name):
+    def get_rating(self, name):
         name = utils.fix_str(name)
         if name in self.__memory["names"]:
             name = self.__memory["names"][name]
@@ -189,6 +189,27 @@ class Memory:
         name = self.__memory["names"][id]
         return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
         return return_tuple
+    
+    def get_message_count(self, name):
+        name = utils.fix_str(name)
+        if name in self.__memory["names"]:
+            name = self.__memory["names"][name]
+        x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
+        return x
+
+    def get_message_list(self):
+        top = []
+        for person in self.__memory["messageCount"]:
+            if len(top) == 0:
+                top.append(person)
+            else:
+                top.append(person)
+                for i in range(len(top) - 1, 0, -1):
+                    if self.__memory["messageCount"][person] > self.__memory["messageCount"][top[i - 1]]:
+                        top[i] = top[i - 1]
+                        top[i - 1] = person
+
+        return top
 
 
 # If starting this file as main

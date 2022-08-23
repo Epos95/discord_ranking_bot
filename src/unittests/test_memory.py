@@ -9,7 +9,7 @@ class TestMemory(unittest.TestCase):
 
     def test_types(self):
         # This will test that the arguments raises TypeErrors
-        for functions in [self.handle.add, self.handle.subtract, self.handle.get_stat]:
+        for functions in [self.handle.add, self.handle.subtract, self.handle.get_rating]:
             self.assertRaises(TypeError, functions, 3 + 5j)
             self.assertRaises(TypeError, functions, 5)
             self.assertRaises(TypeError, functions, True)

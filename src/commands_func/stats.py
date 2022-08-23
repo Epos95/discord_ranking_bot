@@ -4,17 +4,16 @@ class Stats:
 
     async def stats(self, message):
 
-        exit()
+        # This will only print the stats
         if ' ' not in message.content:
-            longest_name = max(map(len, self.memory.get_list()))
+            longest_name = max(map(len, self.memory.get_message_list()))
             response = ("-" * (longest_name + 12)) + "\n"
 
-            for counter, person in enumerate(self.memory.get_list()):
-                response += f"| \#{str(counter+1)} {self.memory.get_stat(person)}"
+            for counter, person in enumerate(self.memory.get_message_list()):
+                response += f"| \#{str(counter+1)} {self.memory.get_message_count(person)}"
 
             response += "-" * (longest_name + 12)
             await message.channel.send(response)
-            print("stats")
         else:
-            print("specific stats")
+            await message.channel.send("Sorry not implemented, try at next release")
 
