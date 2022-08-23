@@ -11,6 +11,8 @@ class Ranking:
     async def ranking(self, message):
         longest_name = max(map(len, self.memory.get_list()))
         response = ("-" * (longest_name + 12)) + "\n"
+        response += f'| Voting:\n'
+        response += ("-" * (longest_name + 12)) + "\n"
 
         for counter, person in enumerate(self.memory.get_list()):
             response += f"| \#{str(counter+1)} {self.memory.get_rating(person)}"

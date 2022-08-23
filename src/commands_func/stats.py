@@ -8,6 +8,8 @@ class Stats:
         if ' ' not in message.content:
             longest_name = max(map(len, self.memory.get_message_list()))
             response = ("-" * (longest_name + 12)) + "\n"
+            response += f'| Messages sent:\n'
+            response += ("-" * (longest_name + 12)) + "\n"
 
             for counter, person in enumerate(self.memory.get_message_list()):
                 response += f"| \#{str(counter+1)} {self.memory.get_message_count(person)}"
