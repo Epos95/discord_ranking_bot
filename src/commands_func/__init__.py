@@ -6,3 +6,4 @@ from .citation import Citation
 from .name import Name
 from .history import History
 from .mute import Mute
+from .stats import Stats
