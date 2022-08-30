@@ -2,7 +2,7 @@ import os
 import memory
 
 import discord
-from commands_func import Ranking, Citation, Name, State, History, Mute
+from commands_func import Ranking, Citation, Name, Stats, History, Mute
 
 # Had this for the intent
 from dotenv import load_dotenv
