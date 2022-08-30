@@ -5,3 +5,4 @@ from .ranking import Ranking
 from .citation import Citation
 from .name import Name
 from .history import History
+from .mute import Mute
