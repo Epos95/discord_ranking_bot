@@ -16,6 +16,8 @@ class Stats:
 
             response += "-" * (longest_name + 12)
             await message.channel.send(response)
+        
+        # This will print the stats for a individual
         else:
             await message.channel.send("Sorry not implemented, try at next release")
 

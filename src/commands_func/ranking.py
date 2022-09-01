@@ -23,8 +23,8 @@ class Ranking:
     # This will check to make sure the vote is "good enough"
     async def __is_good_vote(self, message):
         if str(message.channel) != self.CHANNEL_RATING:
-            response = "Wrong channel for command"
-            await message.channel.send(response)
+            # response = "Wrong channel for command"
+            # await message.channel.send(response)
             return 0
 
         vote_info = utils.get_vote(message, self.memory)
