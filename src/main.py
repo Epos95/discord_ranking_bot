@@ -53,7 +53,7 @@ async def on_message(message):
         return
 
     if str(message.guild) == GUILD:
-        memory_handle.messageSend(message)
+        await memory_handle.messageSend(message)
 
         # If the command is made with arg
         if ' ' in message.content and message.content.split()[0] in commands:
