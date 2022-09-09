@@ -193,9 +193,10 @@ class Memory:
     
     def get_message_count(self, name):
         name = utils.fix_str(name)
+        x = ""
         if name in self.__memory["names"]:
             name = self.__memory["names"][name]
-        x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
+            x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
         return x
 
     def get_message_list(self):
