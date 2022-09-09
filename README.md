@@ -7,13 +7,15 @@ Simple bot for discord. It can be used for ranking and citing.
 + [name] ([reason]) - Will give a score to a person
 - [name] ([reason]) - Will remove a score from a person
 !name [nickname] - Sets new nickname, and also adds it as a alias
+!cite when replaying to a message will add the message as a citation
+!cite alone will print a random message that was cited before
 ```
 
 ### Future features
 * Handeling aliases (by beeing able to add and remove aliases)
 * Allowing new persons to be added without needing to manually add them
-* Counting sent messages on the server, to know who is sending most messages. Something similar to the ranking system that is in place now.
 * Sending schedule from timeEdit to discord? This would be fun
+* Send encrypted messages from a dm to a channel. Everyone that is allowed can uncrypt the message to either the channel or in the dms.
 
 ## Things that needs to be added manually:
 * .env 
