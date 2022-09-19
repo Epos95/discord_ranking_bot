@@ -185,10 +185,13 @@ class Memory:
             return 0
 
         count_of_citations = len(self.__memory["citation"])
-        random_cite_id = random.randint(0, count_of_citations - 1)
-        id = self.__memory["citation"][str(random_cite_id)][0]
-        name = self.__memory["names"][id]
-        return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
+        while 1:
+            random_cite_id = random.randint(0, count_of_citations - 1)
+            id = self.__memory["citation"][str(random_cite_id)][0]
+            if id in self.__memory["names"]:
+                name = self.__memory["names"][id]
+                return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
+                break
         return return_tuple
     
     def get_message_count(self, name):
