@@ -2,7 +2,7 @@ import os
 import memory
 
 import discord
-from commands_func import Ranking, Citation, Name, Stats, History
+from commands_func import *
 
 # Had this for the intent
 from dotenv import load_dotenv
@@ -29,6 +29,7 @@ citation_handle = Citation(**kwarg_send)
 name_handle = Name(**kwarg_send)
 history_handle = History(**kwarg_send)
 stats_handle = Stats(**kwarg_send)
+help_handle = Help(**kwarg_send)
 
 
 # This will store different commands and stuff
@@ -41,6 +42,7 @@ commands = {
     "!votes_by": history_handle.cast_by_user,
     "!votes_on": history_handle.cast_on_user,
     "!stats": stats_handle.stats,
+    "!help": help_handle.run,
 }
 
 # If something happens on discord

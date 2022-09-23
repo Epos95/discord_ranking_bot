@@ -6,3 +6,4 @@ from .citation import Citation
 from .name import Name
 from .history import History
 from .stats import Stats
+from .help import Help
