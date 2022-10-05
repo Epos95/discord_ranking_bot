@@ -1,5 +1,6 @@
 import utils
 
+
 class Ranking:
     def __init__(self, **kwargs):
         self.CHANNEL_RATING = kwargs["channel_rating"]
@@ -11,7 +12,7 @@ class Ranking:
     async def ranking(self, message):
         longest_name = max(map(len, self.memory.get_list()))
         response = ("-" * (longest_name + 12)) + "\n"
-        response += f'| Voting:\n'
+        response += f"| Voting:\n"
         response += ("-" * (longest_name + 12)) + "\n"
 
         for counter, person in enumerate(self.memory.get_list()):

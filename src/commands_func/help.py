@@ -1,8 +1,15 @@
 class Help:
     def __init__(self, **kwargs) -> None:
-        pass
+        self.memory = kwargs["memory_handle"]
+
+    def setAllCommands(self, commands):
+        self.commands = commands
 
     async def run(self, message):
+        if " " not in message.content:
+            await self.printAll(message)
+
+    async def printAll(self, message):
         # This is the discription that will be printed
         allCommands = {
                        "!help": "To print all commands",
@@ -23,7 +30,7 @@ class Help:
         for command in allCommands.keys():
             if len(command) > longestCommand:
                 longestCommand = len(command)
-        
+
         # This is padding
         longestCommand += 3
 
@@ -31,9 +38,5 @@ class Help:
             # Adding command padding (to allign) and description
             response += f"{command + (' '* (int(longestCommand) - len(command)))} {description}\n"
         response += "```\n"
-        
-        print(response)
 
         await message.channel.send(response)
-
-
