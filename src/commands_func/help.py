@@ -37,6 +37,4 @@ class Help:
             response += f"{command + (' '* (int(longestCommand) - len(command)))} {description}\n"
         response += "```\n"
 
-        print(response)
-
         await message.channel.send(response)
