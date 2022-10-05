@@ -28,6 +28,7 @@ ranking_handle = Ranking(**kwarg_send)
 citation_handle = Citation(**kwarg_send)
 name_handle = Name(**kwarg_send)
 history_handle = History(**kwarg_send)
+mute_handle = Mute(**kwarg_send, timeout=10)
 stats_handle = Stats(**kwarg_send)
 help_handle = Help(**kwarg_send)
 
@@ -41,9 +42,12 @@ commands = {
     "!cite": citation_handle.cite,
     "!votes_by": history_handle.cast_by_user,
     "!votes_on": history_handle.cast_on_user,
+    "!mute" : mute_handle.mute_user,
+    "!unmute" : mute_handle.unmute_user,
     "!stats": stats_handle.stats,
     "!help": help_handle.run,
 }
+
 
 # If something happens on discord
 @client.event
@@ -55,6 +59,16 @@ async def on_message(message):
         return
 
     if str(message.guild) == GUILD:
+        if mute_handle.is_muted(message.author.id):
+            print(f"removed message from muted user: {message.author.name}")
+            # delete message
+            await message.delete()
+            return
+
+        # Here it should be a counter for messages sent on the server.
+
+        # If there is a image, this will throw a error
+        # list index out of range
         await memory_handle.messageSend(message)
 
         # If the command is made with arg
