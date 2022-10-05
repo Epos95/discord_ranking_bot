@@ -2,7 +2,7 @@ import os
 import memory
 
 import discord
-from commands_func import Ranking, Citation, Name, Stats, History, Mute
+from commands_func import *
 
 # Had this for the intent
 from dotenv import load_dotenv
@@ -30,6 +30,7 @@ name_handle = Name(**kwarg_send)
 history_handle = History(**kwarg_send)
 mute_handle = Mute(**kwarg_send)
 stats_handle = Stats(**kwarg_send)
+help_handle = Help(**kwarg_send)
 
 
 # This will store different commands and stuff
@@ -44,6 +45,7 @@ commands = {
     "!mute" : mute_handle.mute_user,
     "!unmute" : mute_handle.unmute_user,
     "!stats": stats_handle.stats,
+    "!help": help_handle.run,
 }
 
 
@@ -67,7 +69,7 @@ async def on_message(message):
 
         # If there is a image, this will throw a error
         # list index out of range
-        memory_handle.messageSend(message)
+        await memory_handle.messageSend(message)
 
         # If the command is made with arg
         if ' ' in message.content and message.content.split()[0] in commands:

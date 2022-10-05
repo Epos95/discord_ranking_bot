@@ -12,10 +12,13 @@ class Stats:
             response += ("-" * (longest_name + 12)) + "\n"
 
             for counter, person in enumerate(self.memory.get_message_list()):
-                response += f"| \#{str(counter+1)} {self.memory.get_message_count(person)}"
+                if self.memory.get_message_count(person) != "":
+                    response += f"| \#{str(counter+1)} {self.memory.get_message_count(person)}"
 
             response += "-" * (longest_name + 12)
             await message.channel.send(response)
+        
+        # This will print the stats for a individual
         else:
             await message.channel.send("Sorry not implemented, try at next release")
 

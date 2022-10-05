@@ -17,13 +17,14 @@ class Memory:
         fh.close()
 
     # This is a counter for the messages sent on the server
-    def messageSend(self, message):
+    async def messageSend(self, message):
         # For adding the header if not in memory already
         if 'messageCount' not in self.__memory:
             self.__memory['messageCount'] = {}
             self.__memory['messageCount'][message.author.id] = 1
         elif str(message.author.id) not in self.__memory['messageCount']:
             self.__memory['messageCount'][str(message.author.id)] = 1
+            await message.channel.send("New person has been created")
         else:   
             self.__memory['messageCount'][str(message.author.id)] += 1
         
@@ -184,17 +185,21 @@ class Memory:
             return 0
 
         count_of_citations = len(self.__memory["citation"])
-        random_cite_id = random.randint(0, count_of_citations - 1)
-        id = self.__memory["citation"][str(random_cite_id)][0]
-        name = self.__memory["names"][id]
-        return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
+        while 1:
+            random_cite_id = random.randint(0, count_of_citations - 1)
+            id = self.__memory["citation"][str(random_cite_id)][0]
+            if id in self.__memory["names"]:
+                name = self.__memory["names"][id]
+                return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
+                break
         return return_tuple
     
     def get_message_count(self, name):
         name = utils.fix_str(name)
+        x = ""
         if name in self.__memory["names"]:
             name = self.__memory["names"][name]
-        x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
+            x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
         return x
 
     def get_message_list(self):
