@@ -14,6 +14,8 @@ class Help:
                        "!name <new name>": "This will change the name displayed by the bot",
                        "!votes_on <name> <optional amount>": "This will print ratings other people placed on mentioned person",
                        "!votes_by <name> <optional amount>": "This will print rating a person placed on others",
+                       "!mute <@name>":"Mutes the specified user",
+                       "!unmute <@name>":"Unmutes the specified user",
                        }
 
         response = "```"

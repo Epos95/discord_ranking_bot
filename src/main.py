@@ -28,7 +28,7 @@ ranking_handle = Ranking(**kwarg_send)
 citation_handle = Citation(**kwarg_send)
 name_handle = Name(**kwarg_send)
 history_handle = History(**kwarg_send)
-mute_handle = Mute(**kwarg_send)
+mute_handle = Mute(**kwarg_send, timeout=10)
 stats_handle = Stats(**kwarg_send)
 help_handle = Help(**kwarg_send)
 
