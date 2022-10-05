@@ -48,7 +48,6 @@ class Citation:
             )
         await message.channel.send(response)
 
-
     # This function will send a random cited message
     async def send_cite(self, message):
         cited_message = self.memory.get_cite()

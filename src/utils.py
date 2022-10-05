@@ -1,8 +1,6 @@
 import re
 
 
-#from memory import Memory
-
 def fix_str(name):
     if type(name) != str:
         raise TypeError(

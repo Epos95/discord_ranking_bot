@@ -49,7 +49,7 @@ commands = {
 @client.event
 # If this something is a message
 async def on_message(message):
-    #print(message.author.id)
+    # print(message.author.id)
     # This is just so the bot does not answer itself and become a loop
     if message.author == client.user:
         return
@@ -58,9 +58,9 @@ async def on_message(message):
         await memory_handle.messageSend(message)
 
         # If the command is made with arg
-        if ' ' in message.content and message.content.split()[0] in commands:
+        if " " in message.content and message.content.split()[0] in commands:
             await commands[message.content.split()[0]](message)
-        
+
         # If the command does not have any args
         elif message.content in commands:
             await commands[message.content](message)

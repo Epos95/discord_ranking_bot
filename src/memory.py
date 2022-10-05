@@ -19,15 +19,15 @@ class Memory:
     # This is a counter for the messages sent on the server
     async def messageSend(self, message):
         # For adding the header if not in memory already
-        if 'messageCount' not in self.__memory:
-            self.__memory['messageCount'] = {}
-            self.__memory['messageCount'][message.author.id] = 1
-        elif str(message.author.id) not in self.__memory['messageCount']:
-            self.__memory['messageCount'][str(message.author.id)] = 1
+        if "messageCount" not in self.__memory:
+            self.__memory["messageCount"] = {}
+            self.__memory["messageCount"][message.author.id] = 1
+        elif str(message.author.id) not in self.__memory["messageCount"]:
+            self.__memory["messageCount"][str(message.author.id)] = 1
             await message.channel.send("New person has been created")
-        else:   
-            self.__memory['messageCount'][str(message.author.id)] += 1
-        
+        else:
+            self.__memory["messageCount"][str(message.author.id)] += 1
+
         self.__save()
         return 1
 
@@ -193,13 +193,18 @@ class Memory:
                 return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
                 break
         return return_tuple
-    
+
     def get_message_count(self, name):
         name = utils.fix_str(name)
         x = ""
         if name in self.__memory["names"]:
             name = self.__memory["names"][name]
-            x = name + " " + str(self.__memory["messageCount"][self.alias_id(name)]) + "\n"
+            x = (
+                name
+                + " "
+                + str(self.__memory["messageCount"][self.alias_id(name)])
+                + "\n"
+            )
         return x
 
     def get_message_list(self):
@@ -210,7 +215,10 @@ class Memory:
             else:
                 top.append(person)
                 for i in range(len(top) - 1, 0, -1):
-                    if self.__memory["messageCount"][person] > self.__memory["messageCount"][top[i - 1]]:
+                    if (
+                        self.__memory["messageCount"][person]
+                        > self.__memory["messageCount"][top[i - 1]]
+                    ):
                         top[i] = top[i - 1]
                         top[i - 1] = person
 
