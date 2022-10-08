@@ -2,6 +2,8 @@
     "terminal.integrated.splitCwd": "workspaceRoot",
     "code-runner.customCommand": "python main.py", // Binding is Ctrl + Alt + k
     "python.formatting.provider": "black",
-    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.formatOnSave": true,
+    },
     "code-runner.runInTerminal": true,
 }

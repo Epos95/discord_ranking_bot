@@ -1,4 +1,4 @@
-#set shell := ["cmd.exe", "/c"] # Comment this if not using windows 
+# set shell := ["cmd.exe", "/c"] 
 
 # This will fix the code (black python)
 setup:
@@ -11,8 +11,10 @@ restart:
 
 stop:
     sudo docker stop bot
+    sudo docker cp bot:/discord_ranking_bot/stats.json .
 
 reset:
+    sudo docker cp bot:/discord_ranking_bot/stats.json .
     sudo docker stop bot
     sudo docker rm bot 
     sudo docker image rm discord-bot -f
