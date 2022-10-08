@@ -7,7 +7,6 @@ from commands_func import *
 # Had this for the intent
 from dotenv import load_dotenv
 
-print("running")
 
 # This is just config stuff: Token, what server to write to, what channel to use for io
 load_dotenv()
@@ -44,8 +43,8 @@ commands = {
     "!cite": citation_handle.cite,
     "!votes_by": history_handle.cast_by_user,
     "!votes_on": history_handle.cast_on_user,
-    "!mute" : mute_handle.mute_user,
-    "!unmute" : mute_handle.unmute_user,
+    "!mute": mute_handle.mute_user,
+    "!unmute": mute_handle.unmute_user,
     "!stats": stats_handle.stats,
     "!help": help_handle.run,
 }
