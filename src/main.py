@@ -7,6 +7,8 @@ from commands_func import *
 # Had this for the intent
 from dotenv import load_dotenv
 
+print("running")
+
 # This is just config stuff: Token, what server to write to, what channel to use for io
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
