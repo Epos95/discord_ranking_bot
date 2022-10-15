@@ -24,16 +24,18 @@ Simple bot for discord. It can be used for ranking and citing.
 
 ## Things that needs to be added manually:
 * .env 
+* mysql docker
 
 The .env file needs to be added manually with structure:
 ```
 DISCORD_TOKEN=[Actual token]
 GUILD=[Server name]
-```
-* stats.json
 
-## Usage of project:
-This project has a just file. You can read more about that [here](https://github.com/casey/just). The project is kept pretty by [black python](https://github.com/psf/black) which also is included in the just file.
+SQL_HOST = [ip]
+SQL_USER = [Username]
+SQL_PASS = [Password]
+SQL_PORT = [What port it is running]
+```
 
 ## Structure of project
 The project is structured in OOP with a heavily usage of packages/modules. Where every command is a separate part of the command package. This is just to make it easy to navigate between different commands and also to be able to change things without making everything dependent on each other. 
