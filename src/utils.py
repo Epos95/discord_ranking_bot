@@ -1,4 +1,5 @@
 import re
+from memory import Memory
 
 
 def fix_str(name):
@@ -26,7 +27,7 @@ def vote_meaning(sign):
 
 # This function will return what type of vote, voter, votie, reason.
 # arg should be the whole message, not just the content.
-def get_vote(message, memoryHandle):
+def get_vote(message, memoryHandle: Memory):
     content = message.content
     author = message.author.id
     name = ""
@@ -37,7 +38,7 @@ def get_vote(message, memoryHandle):
 
     tagVoteName = re.search("<@([0-9]{18})>", content)
     if tagVoteName:
-        name = memoryHandle.id_name(tagVoteName.group(1))
+        name = memoryHandle.id_to_name(tagVoteName.group(1))
     for i in content:
         if i == "(" or is_reason:
             if i != "(" and i != ")":

@@ -1,30 +1,38 @@
-# Chould think about splittling this function up?
-# At least if making it any bigger. It can not be any larger now.
-# If splitting the code, make sure to have one function for each thing
+from memory import Memory
+import mysql.connector
+import utils
+
+
 class Name:
     def __init__(self, **kwargs):
-        self.memory = kwargs["memory_handle"]
+        self.memory: Memory = kwargs["memory_handle"]
 
     async def name(self, message):
         # This is if there was 1 argument to the command
         if len(message.content.split()) == 2:
+            new_name = utils.fix_str(message.content.split()[1])
+            # TODO: implement propper error handling to catch specific faults
+            try:
+                self.memory.add_alias(message.author.id, new_name)
+            except:
+                pass
+
             result = self.memory.change_name(
                 message.author.id, message.content.split()[1]
             )
-            if result == 1:
+            if result:
                 response = "Name has been changed!"
-            elif result == 0:
-                response = "Could not change to the new name"
             else:
-                response = "Something else went wrong"
+                response = "Name could not be changed!"
 
             await message.channel.send(response)
+
         elif len(message.content.split()) > 2:
             # This is if more then 1 argument given
             response = "You can not have space in name!"
             await message.channel.send(response)
         else:
             # This is to display current name
-            name = self.memory.id_name(message.author.id)
+            name = self.memory.id_to_name(message.author.id)
             response = f"Your current name is {name}"
             await message.channel.send(response)

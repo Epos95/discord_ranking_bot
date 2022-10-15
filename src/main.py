@@ -66,11 +66,8 @@ async def on_message(message):
             await message.delete()
             return
 
-        # Here it should be a counter for messages sent on the server.
-
-        # If there is a image, this will throw a error
-        # list index out of range
-        await memory_handle.messageSend(message)
+        # Counting messages sent by users
+        memory_handle.sent_messages_points(user_id=str(message.author.id), points=1)
 
         # If the command is made with arg
         if " " in message.content and message.content.split()[0] in commands:

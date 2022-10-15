@@ -1,21 +1,24 @@
+from memory import Memory
+
+
 class Stats:
     def __init__(self, **kwargs):
-        self.memory = kwargs["memory_handle"]
+        self.memory: Memory = kwargs["memory_handle"]
 
     async def stats(self, message):
 
         # This will only print the stats
         if " " not in message.content:
-            longest_name = max(map(len, self.memory.get_message_list()))
+            stat_order = self.memory.get_message_order()
+
+            longest_name = max(map(len, [e[1] for e in stat_order]))
             response = ("-" * (longest_name + 12)) + "\n"
             response += f"| Messages sent:\n"
             response += ("-" * (longest_name + 12)) + "\n"
 
-            for counter, person in enumerate(self.memory.get_message_list()):
-                if self.memory.get_message_count(person) != "":
-                    response += (
-                        f"| \#{str(counter+1)} {self.memory.get_message_count(person)}"
-                    )
+            for counter, person in enumerate([e[1] for e in stat_order]):
+                #                  #pos            |person|  sent messages
+                response += f"| \#{str(counter+1)} {person} {[x[2] for x in stat_order if x[1] == person][0]}\n"
 
             response += "-" * (longest_name + 12)
             await message.channel.send(response)

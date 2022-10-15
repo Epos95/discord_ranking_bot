@@ -1,6 +1,9 @@
+from memory import Memory
+
+
 class Citation:
     def __init__(self, **kwargs):
-        self.memory = kwargs["memory_handle"]
+        self.memory: Memory = kwargs["memory_handle"]
         pass
 
     # This is the function that will be called when typing "!cite"
@@ -32,8 +35,9 @@ class Citation:
                     await message.channel.send(response)
                     return -1
 
-                return_value = self.memory.save_cite(
-                    old_message.author.id, old_message.content, old_message.id
+                # FIXME: None should be the timestamp of the message in sql format
+                return_value = self.memory.add_cite(
+                    old_message.author.id, old_message.content, old_message.created_at
                 )
                 if return_value == 1:
                     response = "Message was cited"
@@ -50,6 +54,13 @@ class Citation:
 
     # This function will send a random cited message
     async def send_cite(self, message):
-        cited_message = self.memory.get_cite()
-        response = f'"{cited_message[1]}" ~ {cited_message[0]}'
+        if len(message.content.split()) > 1:
+            cited_message = self.memory.get_ranom_cite(int(message.content.split()[1]))
+        else:
+            cited_message = self.memory.get_ranom_cite()
+
+        response = ""
+        for msg in cited_message:
+            response += f'"{ msg[2]}" ~ {self.memory.id_to_name(msg[1])}\n'
+
         await message.channel.send(response)

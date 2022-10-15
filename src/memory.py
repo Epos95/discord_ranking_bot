@@ -1,231 +1,270 @@
 # imports from lib
+from dotenv import load_dotenv
+from unittest import result
 import datetime
-import json
-import random
-
-# Other selfwritten files
-import utils
+import mysql.connector
+import os
 
 
 class Memory:
-    # Just initialation, loading json file and making it usable
-    def __init__(self):
-        self.__savefile = "../stats.json"
+    def __init__(self) -> None:
+        load_dotenv()
 
-        fh = open(self.__savefile, "r")
-        self.__memory = json.load(fh)
-        fh.close()
+        self.__SQL_USER = os.getenv("SQL_USER")
+        self.__SQL_PASS = os.getenv("SQL_PASS")
+        self.__SQL_PORT = os.getenv("SQL_PORT")
+        self.__SQL_HOST = os.getenv("SQL_HOST")
 
-    # This is a counter for the messages sent on the server
-    async def messageSend(self, message):
-        # For adding the header if not in memory already
-        if "messageCount" not in self.__memory:
-            self.__memory["messageCount"] = {}
-            self.__memory["messageCount"][message.author.id] = 1
-        elif str(message.author.id) not in self.__memory["messageCount"]:
-            self.__memory["messageCount"][str(message.author.id)] = 1
-            await message.channel.send("New person has been created")
-        else:
-            self.__memory["messageCount"][str(message.author.id)] += 1
+    def __get_sql_handle(self):
+        mydb = mysql.connector.connect(
+            host=self.__SQL_HOST,
+            user=self.__SQL_USER,
+            port=self.__SQL_PORT,
+            password=self.__SQL_PASS,
+            database="test",
+        )
+        return mydb
 
-        self.__save()
-        return 1
+    # General function to change a number of an existing row
+    def __change_points(self, table, column, user_id, points=1):
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
 
-    # This is for adding points to a person
-    def add(self, name):
-        if type(name) != str:
-            raise TypeError("The name must be a string")
+        # To prevent sql-injection usage of %s
+        sql = f"SELECT * FROM User WHERE Id=%s"
+        values = (user_id,)
+        mycursor.execute(sql, values)
 
-        name = utils.fix_str(name)
-        # print(f"name: {name}")
-        if self.__is_person(name):
-            self.__memory["top"][name] += 1
-        else:
-            # If the name was not recognized
-            self.__create(name, 1)
+        # If defined increment, else skip
+        if mycursor.fetchone():
+            sql = f"UPDATE {table} SET {column} = {column} + %s WHERE Id=%s"
+            values = (
+                points,
+                user_id,
+            )
 
-        # print(self.__memory["top"])
-        self.__save()
-
-    # This is for subtracting points from person
-    def subtract(self, name):
-        if type(name) != str:
-            raise TypeError("The name must be a string")
-
-        name = utils.fix_str(name)
-        if self.__is_person(name):
-            self.__memory["top"][name] -= 1
-        else:
-            self.__create(name, -1)
-
-        print(self.__memory["top"])
-        self.__save()
-
-    # To create a new person, this is a private function
-    def __create(self, name, val):
-        self.__memory["top"][name] = val
-
-    # To check if person exists in json top-list, think I should swatch this out with the actual dictionary find funciton
-    def __is_person(self, name):
-        try:
-            if self.__memory["top"][name] != None:
-                return True
-        except:
-            return False
-
-    # This will just return the persons in ranking order from high to low
-    def get_list(self):
-        top = []
-        for person in self.__memory["top"]:
-            if len(top) == 0:
-                top.append(person)
-            else:
-                top.append(person)
-                for i in range(len(top) - 1, 0, -1):
-                    if self.__memory["top"][person] > self.__memory["top"][top[i - 1]]:
-                        top[i] = top[i - 1]
-                        top[i - 1] = person
-
-        return top
-
-    # When saving all the new cool info
-    def __save(self):
-        fh = open(self.__savefile, "w")
-        fh.write(json.dumps(self.__memory))
-        fh.close()
-
-    # This is a "To string" function for each person individualy
-    def get_rating(self, name):
-        name = utils.fix_str(name)
-        if name in self.__memory["names"]:
-            name = self.__memory["names"][name]
-        x = name + " " + str(self.__memory["top"][self.alias_id(name)]) + "\n"
-        return x
-
-    def get_pos(self, name):
-        name = self.alias_id(utils.fix_str(name))
-        top_list = self.get_list()
-        for i in range(len(top_list)):
-            if top_list[i] == name:
-                return i + 1
+            mycursor.execute(sql, values)
+            mydb.commit()
+            mydb.close()
+            return 1
+        mydb.close()
         return 0
 
-    # This will save stuff to the memory
-    def history(self, sender, reciever, reason, vote):
-        vote = utils.vote_meaning(vote)
-        timeholder = datetime.datetime.now()
-        time = timeholder.strftime("%d/%m-%Y %H:%M:%S")
-        self.__memory["voting_history"].insert(
-            0,
-            {
-                "sender": sender,
-                "reciever": reciever,
-                "reason": reason,
-                "vote": vote,
-                "timestamp": time,
-            },
+    def sent_messages_points(self, user_id: str, points: int = 1):
+        return self.__change_points(
+            table="User", column="Message_count", user_id=user_id, points=points
         )
-        self.__save()
 
-    # Function takes id as argument, returns the current name
-    def id_name(self, id):
-        id = str(id)
-        return self.__memory["names"][id]
+    def voting_points(self, user_id: str, points: int = 1):
+        return self.__change_points(
+            table="User", column="Rating", user_id=user_id, points=points
+        )
 
-    # Function takes a name as argument, returns the id
-    def alias_id(self, name):
-        name = name.capitalize()
-        try:
-            return str(self.__memory["alias"][name])
-        except:
-            # This should return discord nickname
-            return "Jane Doe"
+    # General function to get the order of a table sorted by specified column
+    def __get_order(self, table, column):
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
 
-    def add_alias(self, person_id, new_alias):
-        new_alias = utils.fix_str(new_alias)
-        for key, val in self.__memory["alias"].items():
-            if key == new_alias:
-                if val != person_id:
-                    return 0
-                return 1
-        self.__memory["alias"][new_alias] = str(person_id)
-        self.__save()
-        print("new alias")
-        return 1
+        sql = f"SELECT * FROM {table} ORDER BY {column} DESC"
+        mycursor.execute(sql)
+        return_list = mycursor.fetchall()
+        mydb.close()
+        return return_list
 
-    def change_name(self, person_id, new_name):
-        for key, val in self.__memory["alias"].items():
-            formated_new_name = utils.fix_str(new_name)
-            if key == formated_new_name:
-                if str(val) != str(person_id):
-                    return 0
-                else:
-                    self.__memory["names"][str(person_id)] = new_name
-                    self.__save()
-                    return 1
+    def get_rating_order(self):
+        return self.__get_order(table="User", column="Rating")
 
-        # This is if the name is not an alias right now
-        self.__memory["names"][str(person_id)] = str(new_name)
-        self.add_alias(person_id, new_name)
-        return 1
+    def get_message_order(self):
+        return self.__get_order(table="User", column="Message_count")
 
-    def save_cite(self, person_id, cited_message, cited_message_id):
-        # print("person_id", person_id, ", message", cited_message, "cited id", cited_message_id)
-        count_of_citations = len(self.__memory["citation"])
-        self.__memory["citation"][count_of_citations] = [
-            str(person_id),
-            str(cited_message),
-        ]
-        self.__save()
-        return 1
+    def get_user_info(self, user_id: str):
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
 
-    def get_cite(self, number=None):
-        if number != None:
-            # This should maybe print a special quote, but not quite sure how it should be implemented.
+        # To prevent sql-injection usage of %s
+        sql = f"SELECT * FROM User WHERE Id=%s"
+        values = (user_id,)
+        mycursor.execute(sql, values)
+
+        # If defined increment, else skip
+        if user := mycursor.fetchone():
+            mydb.close()
+            return user
+
+        mydb.close()
+        return 0
+
+    # General function to add a new instance of a specified table
+    def __add_value(self, table: str, **kwargs):
+        """
+        Kwargs need to define table and have atleast one kwarg
+        """
+        # Too few arguments
+        if len(kwargs) < 1 or table == None:
             return 0
 
-        count_of_citations = len(self.__memory["citation"])
-        while 1:
-            random_cite_id = random.randint(0, count_of_citations - 1)
-            id = self.__memory["citation"][str(random_cite_id)][0]
-            if id in self.__memory["names"]:
-                name = self.__memory["names"][id]
-                return_tuple = (name, self.__memory["citation"][str(random_cite_id)][1])
-                break
-        return return_tuple
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
 
-    def get_message_count(self, name):
-        name = utils.fix_str(name)
-        x = ""
-        if name in self.__memory["names"]:
-            name = self.__memory["names"][name]
-            x = (
-                name
-                + " "
-                + str(self.__memory["messageCount"][self.alias_id(name)])
-                + "\n"
+        sql = f"INSERT INTO {table} ({', '.join(kwargs.keys())}) VALUES ({', '.join(['%s']*len(kwargs))})"
+
+        mycursor.execute(sql, list(kwargs.values()))
+
+        mydb.commit()
+        mydb.close()
+        return 1
+
+    def add_vote(self, sender: str, reciver: str, reason: str, vote: int):
+        param = {
+            "Sent_from": sender,
+            "Sent_to": reciver,
+            "Content": reason,
+            "Points": vote,
+        }
+
+        return self.__add_value(table="Vote", **param)
+
+    def add_alias(self, user_id: str, new_alias: str):
+        param = {
+            "User_id": user_id,
+            "Name": new_alias,
+        }
+
+        return self.__add_value(table="Alias", **param)
+
+    def add_cite(self, user_id: str, cited_message: str, timestamp: datetime.datetime):
+        param = {
+            "Sent_from": user_id,
+            "Content": cited_message,
+            "Timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+        return self.__add_value(table="Cite", **param)
+
+    def add_user(self, user_id: str, name: str):
+        param = {
+            "Id": user_id,
+            "Name": name,
+            "Message_count": 0,
+            "Rating": 0,
+        }
+
+        return self.__add_value(table="User", **param)
+
+    def id_to_name(self, user_id):
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
+
+        # To prevent sql-injection usage of %s
+        sql = "SELECT * FROM User WHERE Id=%s"
+        values = (user_id,)
+        mycursor.execute(sql, values)
+
+        # If defined increment, else skip
+        if x := mycursor.fetchone():
+            mydb.close()
+            return x[1]
+
+        mydb.close()
+        return 0
+
+    def alias_to_id(self, alias) -> str:
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
+
+        # To prevent sql-injection usage of %s
+        sql = "SELECT * FROM Alias WHERE Name=%s"
+        values = (alias,)
+        mycursor.execute(sql, values)
+
+        # If defined increment, else skip
+        if x := mycursor.fetchone():
+            mydb.close()
+            return x[1]
+
+        mydb.close()
+        return 0  # This means no found
+
+    def change_name(self, user_id, new_name) -> int:
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
+
+        # To prevent sql-injection usage of %s
+        sql = "SELECT * FROM User WHERE Id=%s"
+        values = (user_id,)
+        mycursor.execute(sql, values)
+
+        # If defined person found
+        # FIXME: Does not work yet
+        if mycursor.fetchone():
+            sql = "SELECT * FROM Alias WHERE Name=%s AND User_id=%s"
+            values = (
+                new_name,
+                user_id,
             )
-        return x
+            mycursor.execute(sql, values)
 
-    def get_message_list(self):
-        top = []
-        for person in self.__memory["messageCount"]:
-            if len(top) == 0:
-                top.append(person)
+            if mycursor.fetchone():
+                sql = f"UPDATE User SET Name = %s WHERE Id=%s"
+                values = (
+                    new_name,
+                    user_id,
+                )
+
+                mycursor.execute(sql, values)
+                mydb.commit()
+                mydb.close()
+                return 1
             else:
-                top.append(person)
-                for i in range(len(top) - 1, 0, -1):
-                    if (
-                        self.__memory["messageCount"][person]
-                        > self.__memory["messageCount"][top[i - 1]]
-                    ):
-                        top[i] = top[i - 1]
-                        top[i - 1] = person
+                # This means that the alias belongs to someone else or is not defined
+                pass
 
-        return top
+        mydb.close()
+        return 0
 
-    def get_memory(self):
-        return self.__memory
+    def __get_random(self, table: str, n) -> list[tuple]:
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
+
+        # To prevent sql-injection usage of %s
+        sql = f"SELECT * FROM {table} ORDER BY RAND() LIMIT %s"
+        values = (n,)
+        mycursor.execute(sql, values)
+
+        values = mycursor.fetchall()
+        mydb.close()
+        return values
+
+    def get_ranom_cite(self, n=1) -> list[tuple]:
+        return self.__get_random("Cite", n)
+
+    def __get_vote_spec(self, sent_from=None, sent_to=None) -> list[tuple]:
+        if not sent_from and not sent_to:
+            return 0
+
+        mydb = self.__get_sql_handle()
+        mycursor = mydb.cursor()
+
+        # To prevent sql-injection usage of %s
+        if sent_from:
+            sql = f"SELECT * FROM Vote WHERE Sent_from = %s"
+            values = (sent_from,)
+        elif sent_to:
+            sql = f"SELECT * FROM Vote WHERE Sent_to= %s"
+            values = (sent_to,)
+
+        mycursor.execute(sql, values)
+
+        values = mycursor.fetchall()
+
+        mydb.close()
+        return values
+
+    def get_vote_from(self, id) -> list[tuple]:
+        return self.__get_vote_spec(sent_from=id)
+
+    def get_vote_on(self, id) -> list[tuple]:
+        return self.__get_vote_spec(sent_to=id)
 
 
 # If starting this file as main
@@ -234,3 +273,12 @@ if __name__ == "__main__":
     # test.setup()
     # print(test.alias_id("hej"))
     # test.history("From", "To", "Reasoning", "-")
+    # test.voting_points("170604046388953089", 1)
+    print(test.alias_to_id("1"))
+
+
+# SQL e.errno
+# e.errno  |  e.sqlstate  |        meaning
+
+# 1062          23000       duplicate PK
+# 1452          23000       FK contraint fail
