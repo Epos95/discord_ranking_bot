@@ -274,7 +274,7 @@ if __name__ == "__main__":
     # print(test.alias_id("hej"))
     # test.history("From", "To", "Reasoning", "-")
     # test.voting_points("170604046388953089", 1)
-    print(test.alias_to_id("1"))
+    print(test.alias_to_id("d"))
 
 
 # SQL e.errno
