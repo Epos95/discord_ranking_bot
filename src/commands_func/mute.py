@@ -9,6 +9,7 @@ class Mute:
         # no need for memory
         self.muted = []
         self.admins = ["Epos95", "CurryAndMilk"]
+        self.GOD_MODE = True  # Kill switch for if it gets annoying
 
     async def __timeout(self, message, muted_user, timeout=10):
         if self.GOD_MODE and muted_user.name in self.admins:
