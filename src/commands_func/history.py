@@ -1,48 +1,37 @@
+from memory import Memory
+
+
 class History:
     def __init__(self, **kwargs) -> None:
-        self.memory = kwargs["memory_handle"]
+        self.memory: Memory = kwargs["memory_handle"]
 
-    def __get_votes_by(self, username):
-        id = self.memory.alias_id(username)
-        json = self.memory.get_memory()["voting_history"]
+    def __get_votes_by(self, user_id):
+        messages = self.memory.get_vote_from(user_id)
 
-        messages = []
-        for thing in json:
-            if thing["sender"] == username:
-                messages.append(thing)
-
-        s = [f"voting history for {self.memory.id_name(username)}:"]
+        returnList = [f"voting history for {self.memory.id_to_name(user_id)}:"]
         for message in messages:
-            if message["reason"]:
-                m = f"for \"{message['reason']}\" "
-            else:
-                m = f""
-            s.append(
-                f" * {message['vote']} vote {m}from {self.memory.id_name(message['sender'])} cast on {self.memory.id_name(message['reciever'])}"
+            reason = ""
+            if message[3]:
+                reason = f'for "{message[3]}" '
+            returnList.append(
+                f" * {'Up' if message[4] > 0 else 'Down'} vote {reason}from {self.memory.id_to_name(message[2])} cast on {self.memory.id_to_name(message[1])}"
             )
 
-        return s
+        return returnList
 
-    def __get_votes_on(self, username):
-        id = self.memory.alias_id(username)
-        json = self.memory.get_memory()["voting_history"]
+    def __get_votes_on(self, user_id):
+        messages = self.memory.get_vote_on(user_id)
 
-        messages = []
-        for thing in json:
-            if thing["reciever"] == username:
-                messages.append(thing)
-
-        s = [f"voting history on {self.memory.id_name(username)}:"]
+        returnList = [f"voting history on {self.memory.id_to_name(user_id)}:"]
         for message in messages:
-            if message["reason"]:
-                m = f"for \"{message['reason']}\" "
-            else:
-                m = f""
-            s.append(
-                f" * {message['vote']} vote {m}on {self.memory.id_name(message['reciever'])} cast by {self.memory.id_name(message['sender'])}"
+            reason = ""
+            if message[3]:
+                reason = f'for "{message[3]}" '
+            returnList.append(
+                f" * {'Up' if message[4] > 0 else 'Down'} vote {reason}on {self.memory.id_to_name(message[2])} cast by {self.memory.id_to_name(message[1])}"
             )
 
-        return s
+        return returnList
 
     async def cast_by_user(self, message):
         content = message.content.split(" ")
@@ -60,15 +49,15 @@ class History:
             await message.channel.send("Not enough args!")
             pass
 
-        user_alias = self.memory.alias_id(user)
-        if user_alias == "Jane Doe":
+        user_id = self.memory.alias_to_id(user)
+        if user_id == 0:
             await message.channel.send(f"Couldnt find username: {user}")
             return
 
         if n:
-            votes = "\n".join(self.__get_votes_by(user_alias)[: 1 + int(n)])
+            votes = "\n".join(self.__get_votes_by(user_id)[: 1 + int(n)])
         else:
-            votes = "\n".join(self.__get_votes_by(user_alias))
+            votes = "\n".join(self.__get_votes_by(user_id))
 
         await message.channel.send(votes)
 
@@ -88,13 +77,13 @@ class History:
             await message.channel.send("Not enough args!")
             pass
 
-        user_alias = self.memory.alias_id(user)
-        if user_alias == "Jane Doe":
+        user_id = self.memory.alias_to_id(user)
+        if user_id == 0:
             await message.channel.send(f"Couldnt find username: {user}")
             return
         if n:
-            votes = "\n".join(self.__get_votes_on(user_alias)[: 1 + int(n)])
+            votes = "\n".join(self.__get_votes_on(user_id)[: 1 + int(n)])
         else:
-            votes = "\n".join(self.__get_votes_on(user_alias))
+            votes = "\n".join(self.__get_votes_on(user_id))
 
         await message.channel.send(votes)

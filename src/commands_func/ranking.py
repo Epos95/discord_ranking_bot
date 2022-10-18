@@ -1,22 +1,25 @@
 import utils
+from memory import Memory
 
 
 class Ranking:
     def __init__(self, **kwargs):
         self.CHANNEL_RATING = kwargs["channel_rating"]
-        self.memory = kwargs["memory_handle"]
+        self.memory: Memory = kwargs["memory_handle"]
 
     # This will print the current top list of the ranking
     # The fancy stuff is just formating to make it look good
     # Writtten by Epos95
     async def ranking(self, message):
-        longest_name = max(map(len, self.memory.get_list()))
+        rating_order = self.memory.get_rating_order()
+        longest_name = max(map(len, [e[1] for e in rating_order]))
         response = ("-" * (longest_name + 12)) + "\n"
         response += f"| Voting:\n"
         response += ("-" * (longest_name + 12)) + "\n"
 
-        for counter, person in enumerate(self.memory.get_list()):
-            response += f"| \#{str(counter+1)} {self.memory.get_rating(person)}"
+        for counter, person in enumerate([e[1] for e in rating_order]):
+            #                #position         |person|     points
+            response += f"| \#{str(counter+1)} {person} {[x[3] for x in rating_order if x[1] == person][0]}\n"
 
         response += "-" * (longest_name + 12)
         await message.channel.send(response)
@@ -30,70 +33,63 @@ class Ranking:
 
         vote_info = utils.get_vote(message, self.memory)
 
-        # Can not vote on yourself
-        if self.memory.alias_id(vote_info["name"]) == vote_info["author_id"]:
-            response = "You are not allowed to vote on yourself"
-            await message.channel.send(response)
-            return 0
+        reciver_id = self.memory.alias_to_id(vote_info["name"])
 
-        # Can only vote on existing people
-        if self.memory.alias_id(vote_info["name"]) == "Jane Doe":
-            response = f"{vote_info['name']} is not registered as a person"
+        # Can not vote on yourself
+        if reciver_id == vote_info["author_id"]:
+            response = "You are not allowed to vote on yourself"
             await message.channel.send(response)
             return 0
 
         return 1  # If not returned by now it is a allowed vote
 
+    # This will get the position of a user
+    def __position(self, user_id):
+        all_users = self.memory.get_rating_order()
+        for index, user in enumerate(all_users):
+            if user_id == user[0]:
+                return index + 1
+
+    # General function for the flow how to handle a vote
+    async def __vote(self, message, points):
+        # TODO: Set real error handling with tracing to the actual fault and accurate messages
+        try:
+            if not await self.__is_good_vote(message):
+                # Will just return if conditions not met
+                return -1
+
+            vote_info = utils.get_vote(message, self.memory)
+            reciver_id = self.memory.alias_to_id(vote_info["name"])
+            ranking_before_vote = self.__position(reciver_id)
+
+            # This is the "adding part"
+            self.memory.voting_points(reciver_id, points)
+
+            # Saving stuff to memory
+            self.memory.add_vote(
+                sender=vote_info["author_id"],
+                reciver=reciver_id,
+                reason=vote_info["reason"],
+                vote=points,
+            )
+            ranking_after_vote = self.__position(reciver_id)
+
+            # This just tells the stats after a vote
+            if ranking_before_vote != ranking_after_vote:
+                response = f"{vote_info['name']} was moved {ranking_before_vote-ranking_after_vote} steps to place #{ranking_after_vote}"
+            else:
+                response = (
+                    f"{vote_info['name']} is still on place #{ranking_after_vote}"
+                )
+
+            await message.channel.send(response)
+        except:
+            await message.channel.send("Something went wrong, check the spelling")
+
     # This function is called when giving someone +
     async def add(self, message):
-        if not await self.__is_good_vote(message):
-            # Will just return if conditions not met
-            return -1
-
-        vote_info = utils.get_vote(message, self.memory)
-        ranking_before_vote = self.memory.get_pos(vote_info["name"])
-        # This is the "adding part"
-        self.memory.add(self.memory.alias_id(vote_info["name"]))
-        # Saving stuff to memory
-        self.memory.history(
-            vote_info["author_id"],
-            self.memory.alias_id(vote_info["name"]),
-            vote_info["reason"],
-            message.content[0],
-        )
-        ranking_after_vore = self.memory.get_pos(vote_info["name"])
-
-        # This just tells the stats after a vote
-        if ranking_before_vote != ranking_after_vore:
-            response = f"{vote_info['name']} was moved {ranking_before_vote-ranking_after_vore} steps to place #{self.memory.get_pos(vote_info['name'])}"
-        else:
-            response = f"{vote_info['name']} is still on place #{self.memory.get_pos(vote_info['name'])}"
-
-        await message.channel.send(response)
+        return await self.__vote(message, 1)
 
     # This function is called when giving someone -
     async def sub(self, message):
-        if not await self.__is_good_vote(message):
-            # Will just return if conditions not met
-            return -1
-
-        vote_info = utils.get_vote(message, self.memory)
-        ranking_before_vote = self.memory.get_pos(vote_info["name"])
-        # This is the "subtracting part"
-        self.memory.subtract(self.memory.alias_id(vote_info["name"]))
-        # Saving stuff to memory
-        self.memory.history(
-            vote_info["author_id"],
-            self.memory.alias_id(vote_info["name"]),
-            vote_info["reason"],
-            message.content[0],
-        )
-        ranking_after_vore = self.memory.get_pos(vote_info["name"])
-
-        # This just tells the stats after a vote
-        if ranking_before_vote != ranking_after_vore:
-            response = f"{vote_info['name']} was moved {ranking_before_vote-ranking_after_vore} steps to place #{self.memory.get_pos['name']}"
-        else:
-            response = f"{vote_info['name']} is still on place #{self.memory.get_pos(vote_info['name'])}"
-
-        await message.channel.send(response)
+        return await self.__vote(message, -1)

@@ -7,6 +7,7 @@ from commands_func import *
 # Had this for the intent
 from dotenv import load_dotenv
 
+
 # This is just config stuff: Token, what server to write to, what channel to use for io
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -42,8 +43,8 @@ commands = {
     "!cite": citation_handle.cite,
     "!votes_by": history_handle.cast_by_user,
     "!votes_on": history_handle.cast_on_user,
-    "!mute" : mute_handle.mute_user,
-    "!unmute" : mute_handle.unmute_user,
+    "!mute": mute_handle.mute_user,
+    "!unmute": mute_handle.unmute_user,
     "!stats": stats_handle.stats,
     "!help": help_handle.run,
 }
@@ -65,11 +66,8 @@ async def on_message(message):
             await message.delete()
             return
 
-        # Here it should be a counter for messages sent on the server.
-
-        # If there is a image, this will throw a error
-        # list index out of range
-        await memory_handle.messageSend(message)
+        # Counting messages sent by users
+        memory_handle.sent_messages_points(user_id=str(message.author.id), points=1)
 
         # If the command is made with arg
         if " " in message.content and message.content.split()[0] in commands:
