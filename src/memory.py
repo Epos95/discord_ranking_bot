@@ -21,7 +21,7 @@ class Memory:
             user=self.__SQL_USER,
             port=self.__SQL_PORT,
             password=self.__SQL_PASS,
-            database="test",
+            database="klinternet",
         )
         return mydb
 
