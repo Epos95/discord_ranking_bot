@@ -3,12 +3,17 @@ Simple bot for discord. It can be used for ranking and citing.
 
 ## Commands:
 ```
-!ranking - Stats will print the toplist in order and display the points for the person
-+ [name] ([reason]) - Will give a score to a person
-- [name] ([reason]) - Will remove a score from a person
-!name [nickname] - Sets new nickname, and also adds it as a alias
-!cite when replaying to a message will add the message as a citation
-!cite alone will print a random message that was cited before
+!help                                 To print all commands
+!cite                                 To get a random cited message, when replaying to a message it will save the message
+!ranking                              This will print the stats of the rating given from other people
+!stats                                This command will tell how many message each person has sent
++<name> (reason)                      Will give a person one point in the ranking system
+-<name> (reason)                      Will lower the persons rating by 1
+!name <new name>                      This will change the name displayed by the bot
+!votes_on <name> <optional amount>    This will print ratings other people placed on mentioned person
+!votes_by <name> <optional amount>    This will print rating a person placed on others
+!mute <@name>                         Mutes the specified user
+!unmute <@name>                       Unmutes the specified user
 ```
 
 ### Future features
@@ -19,16 +24,18 @@ Simple bot for discord. It can be used for ranking and citing.
 
 ## Things that needs to be added manually:
 * .env 
+* mysql docker
 
 The .env file needs to be added manually with structure:
 ```
 DISCORD_TOKEN=[Actual token]
 GUILD=[Server name]
-```
-* stats.json
 
-## Usage of project:
-This project has a just file. You can read more about that [here](https://github.com/casey/just). The project is kept pretty by [black python](https://github.com/psf/black) which also is included in the just file.
+SQL_HOST = [ip]
+SQL_USER = [Username]
+SQL_PASS = [Password]
+SQL_PORT = [What port it is running]
+```
 
 ## Structure of project
 The project is structured in OOP with a heavily usage of packages/modules. Where every command is a separate part of the command package. This is just to make it easy to navigate between different commands and also to be able to change things without making everything dependent on each other. 
