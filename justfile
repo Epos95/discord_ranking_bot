@@ -6,7 +6,7 @@ defualt:
 # For the first time running the bot
 setup:
     @sudo docker build -t discord-bot .
-    @sudo docker run -d --name bot -it discord-bot -p 3306:3306
+    @sudo docker run -p 3306:3306-d --name bot -it discord-bot 
 
 # Run or restart the bot
 restart:
