@@ -49,6 +49,17 @@ commands = {
     "!help": help_handle.run,
 }
 
+# Should detect when a member changes its status.
+@client.event
+async def on_member_update(user_before, user_after):
+    user_alias = memory_handle.id_to_name(user_after.id)
+
+    # Needs some data structure keeping track of the time a specific user last went online
+    # (this data structure could be done using the database, adding the last time the user went from offline to online in the database would give some time bugs if the bot went down for a longer period of time however)
+    # Then when getting an update from online to anything else we can delta now with that saved datetime
+    # This will give us how long they were online for and can thus be added to the users global score
+
+    print(f"{user_alias} changed their status!")
 
 # If something happens on discord
 @client.event
